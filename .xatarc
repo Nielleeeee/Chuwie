@@ -1,0 +1,6 @@
+{
+  "databaseURL": "https://Jan-Danielle-Plaza-s-workspace-oti195.us-east-1.xata.sh/db/chuwie",
+  "codegen": {
+    "output": "src/xata.ts"
+  }
+}
