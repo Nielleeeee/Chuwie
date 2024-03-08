@@ -1,7 +1,8 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { SignUp } from "@clerk/nextjs";
+import { SignUp, ClerkLoading, ClerkLoaded } from "@clerk/nextjs";
+import { GradiantLoader } from "@/components/loaders/loader";
 
 export default function Signup() {
   return (
@@ -12,26 +13,32 @@ export default function Signup() {
             <div className="m-12 xl:m-16 w-full bg-[url('/svg/stargazing.svg')] bg-contain bg-center bg-no-repeat"></div>
           </div>
 
-          <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
+          <div className="flex flex-col lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
             <Image
               src={"/logo/chuwie-logo-no-bg.png"}
               alt="chuwie logo"
               width={100}
               height={100}
-              className="mx-auto"
+              className="mx-auto mb-12"
             />
 
-            <div className="mt-12 flex flex-col items-center">
-              <SignUp
-                appearance={{
-                  elements: {
-                    socialButtonsBlockButton: "bg-purple-100",
-                    formButtonPrimary:
-                      "bg-purple-400 hover:bg-purple-500 text-sm normal-case",
-                    footerActionLink: "text-purple-700"
-                  },
-                }}
-              />
+            <div className="my-auto flex flex-col items-center justify-center">
+              <ClerkLoading>
+                <GradiantLoader />
+              </ClerkLoading>
+
+              <ClerkLoaded>
+                <SignUp
+                  appearance={{
+                    elements: {
+                      socialButtonsBlockButton: "bg-purple-100",
+                      formButtonPrimary:
+                        "bg-purple-400 hover:bg-purple-500 text-sm normal-case",
+                      footerActionLink: "text-purple-700",
+                    },
+                  }}
+                />
+              </ClerkLoaded>
             </div>
           </div>
         </div>
