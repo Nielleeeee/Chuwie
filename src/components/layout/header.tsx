@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { UserButton } from "@clerk/nextjs";
+import { ClerkLoaded, ClerkLoading, UserButton } from "@clerk/nextjs";
+import { AvatarLoader } from "@/components/loaders/loader";
 
 export default function Header() {
   const [isActive, setIsActive] = useState(false);
@@ -53,7 +54,13 @@ export default function Header() {
             </li>
 
             <li className="flex flex-row gap-2">
-              <UserButton afterSignOutUrl="/sign-in" />
+              <ClerkLoading>
+                <AvatarLoader />
+              </ClerkLoading>
+
+              <ClerkLoaded>
+                <UserButton afterSignOutUrl="/sign-in" />
+              </ClerkLoaded>
             </li>
           </ul>
 

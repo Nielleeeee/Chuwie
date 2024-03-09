@@ -7,3 +7,7 @@ export const GradiantLoader = () => {
     </div>
   );
 };
+
+export const AvatarLoader = () => {
+  return <div className="rounded-full w-8 h-8 animate-pulse bg-gray-400"></div>;
+};
