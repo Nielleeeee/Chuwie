@@ -37,7 +37,7 @@ export default function FormModal({
               leaveTo="opacity-0 scale-95"
               as={Fragment}
             >
-              <Dialog.Panel className="relative w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-4 sm:p-6 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="relative w-full max-w-xl sm:max-w-2xl md:max-w-3xl transform overflow-hidden rounded-2xl bg-white p-4 sm:p-6 text-left align-middle shadow-xl transition-all">
                 <Dialog.Title
                   as="h3"
                   className="text-xl text-center mt-4 mb-6 font-semibold leading-6 text-gray-900"
