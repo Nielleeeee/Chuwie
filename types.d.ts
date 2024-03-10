@@ -1,9 +1,9 @@
 interface CreatePost {
   content: string;
-  media: string;
-  userId: string;
-  authorFullname: string;
-  authorUsername: string;
+  media: [];
+  userId?: string;
+  authorFullname?: string;
+  authorUsername?: string;
 }
 
 interface FormModalProps {
