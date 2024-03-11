@@ -7,39 +7,54 @@ import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { useDropzone } from "react-dropzone";
 import FormModal from "@/components/modal/formModal";
+import { v2 as cloudinary } from "cloudinary";
+import { handleCreatePost } from "@/app/actions/handleCreatePost";
 
 export default function CreatePost() {
-  const [preview, setPreview] = useState<string | null>(null);
+  const [previews, setPreviews] = useState<string[]>([]);
   const [isOpenModal, setIsOpenModal] = useState(false);
 
   const formik = useFormik<CreatePost>({
     initialValues: {
       content: "",
-      media: "",
-      userId: "",
-      authorFullname: "",
-      authorUsername: "",
+      media: [null],
     },
     validationSchema: Yup.object({
-      content: Yup.string().required("Required"),
-      media: Yup.string().required("Required"),
-      userId: Yup.mixed().required("Rquired"),
-      authorFullname: Yup.string().required("Required"),
-      authorUsername: Yup.string().required("Required"),
+      content: Yup.string(),
+      media: Yup.array(),
     }),
     onSubmit: async (values, { setSubmitting, resetForm }) => {
-      console.log(values);
+      try {
+        console.log("Form values:", formik.values.media);
+        await handleCreatePost(values);
+        resetForm();
+        setPreviews([]);
+      } catch (error) {
+        console.error("Error while creating post:", error);
+      }
     },
   });
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const file = acceptedFiles[0];
-      setPreview(URL.createObjectURL(file));
-      formik.setFieldValue("media", file);
+      // Update previews state with URLs of dropped files
+      const file = acceptedFiles.map((file) => URL.createObjectURL(file));
+      setPreviews((prevPreviews) => [...prevPreviews, ...file]);
+      formik.setFieldValue("media", acceptedFiles);
     },
     [formik]
   );
+
+  const removePreview = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    index: number
+  ) => {
+    event.stopPropagation();
+    setPreviews((prevPreviews) => prevPreviews.filter((_, i) => i !== index));
+
+    const updatedMedia = formik.values.media.filter((_, i) => i !== index);
+    formik.setFieldValue("media", updatedMedia);
+  };
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -47,12 +62,6 @@ export default function CreatePost() {
     maxSize: 1024 * 3000,
     multiple: true,
   });
-
-  const removePreview = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    setPreview(null);
-    formik.setFieldValue("media", null);
-  };
 
   return (
     <>
@@ -97,6 +106,8 @@ export default function CreatePost() {
                 id=""
                 rows={4}
                 className="w-full rounded bg-white border-2 p-2"
+                value={formik.values.content}
+                onChange={formik.handleChange}
               />
             </div>
 
@@ -111,7 +122,7 @@ export default function CreatePost() {
                 className={`mt-2 flex justify-center rounded-lg border px-6 py-10
                   ${
                     formik.touched.media && formik.errors.media
-                      ? "border-red-400"
+                      ? "border-red-400 border-2"
                       : "border-gray-900/25 border-dashed"
                   }`}
               >
@@ -123,33 +134,39 @@ export default function CreatePost() {
                     >
                       <div {...getRootProps()} className="dropzone">
                         <input {...getInputProps()} name="media" />
-                        {preview ? (
-                          <div className="relative">
-                            <button
-                              type="button"
-                              onClick={removePreview}
-                              className="p-2 rounded-full absolute -top-4 -right-4 bg-slate-800 z-10"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth="3"
-                                className="w-4 h-4 stroke-white/80"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M6 18 18 6M6 6l12 12"
-                                />
-                              </svg>
-                            </button>
+                        {previews.length !== 0 ? (
+                          <div className="flex flex-row flex-wrap items-center justify-center gap-4">
+                            {previews.map((preview, index) => (
+                              <div className="relative" key={index}>
+                                <button
+                                  type="button"
+                                  onClick={(event) =>
+                                    removePreview(event, index)
+                                  }
+                                  className="p-2 rounded-full absolute -top-4 -right-4 bg-slate-800 z-10"
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="3"
+                                    className="w-4 h-4 stroke-white/80"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M6 18 18 6M6 6l12 12"
+                                    />
+                                  </svg>
+                                </button>
 
-                            <img
-                              src={preview}
-                              alt="Preview"
-                              className="preview-image"
-                            />
+                                <img
+                                  src={preview}
+                                  alt="Preview"
+                                  className="preview-image w-full max-w-[200px] h-auto object-cover rounded"
+                                />
+                              </div>
+                            ))}
                           </div>
                         ) : (
                           <svg
