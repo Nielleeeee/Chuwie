@@ -1,6 +1,6 @@
 interface CreatePost {
   content: string;
-  media: [file | null];
+  media: [];
   userId?: string;
   authorFullname?: string;
   authorUsername?: string;
