@@ -17,7 +17,7 @@ export default function CreatePost() {
   const formik = useFormik<CreatePost>({
     initialValues: {
       content: "",
-      media: [null],
+      media: [],
     },
     validationSchema: Yup.object({
       content: Yup.string(),
@@ -25,8 +25,31 @@ export default function CreatePost() {
     }),
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
-        console.log("Form values:", formik.values.media);
-        await handleCreatePost(values);
+        const filesData = await Promise.all(
+          values.media.map(async (file: File) => {
+            const arrayBuffer = await file.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
+            return buffer;
+          })
+        );
+
+        const postData = {
+          ...values,
+          media: filesData,
+        };
+
+        const response = await fetch('/api/create-post', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(postData),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to create post');
+        }
+
         resetForm();
         setPreviews([]);
       } catch (error) {
@@ -38,9 +61,11 @@ export default function CreatePost() {
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       // Update previews state with URLs of dropped files
-      const file = acceptedFiles.map((file) => URL.createObjectURL(file));
-      setPreviews((prevPreviews) => [...prevPreviews, ...file]);
-      formik.setFieldValue("media", acceptedFiles);
+      const filePreviews = acceptedFiles.map((file) =>
+        URL.createObjectURL(file)
+      );
+      setPreviews((prevPreviews) => [...prevPreviews, ...filePreviews]);
+      formik.setFieldValue("media", [...formik.values.media, ...acceptedFiles]);
     },
     [formik]
   );
