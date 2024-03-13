@@ -4,11 +4,11 @@
 import React, { useState, useCallback } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { useDropzone } from "react-dropzone";
 import FormModal from "@/components/modal/formModal";
-import { v2 as cloudinary } from "cloudinary";
-import { handleCreatePost } from "@/app/actions/handleCreatePost";
+
+import "react-toastify/dist/ReactToastify.css";
 
 export default function CreatePost() {
   const [previews, setPreviews] = useState<string[]>([]);
@@ -19,11 +19,13 @@ export default function CreatePost() {
       content: "",
       media: [],
     },
+
     validationSchema: Yup.object({
-      content: Yup.string(),
-      media: Yup.array(),
+      content: Yup.string().required(),
+      media: Yup.array().required(),
     }),
-    onSubmit: async (values, { setSubmitting, resetForm }) => {
+
+    onSubmit: async (values, { resetForm }) => {
       try {
         const filesData = await Promise.all(
           values.media.map(async (file: File) => {
@@ -38,20 +40,33 @@ export default function CreatePost() {
           media: filesData,
         };
 
-        const response = await fetch('/api/create-post', {
-          method: 'POST',
+        const createPost = fetch("/api/create-post", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(postData),
         });
 
+        await toast.promise(createPost, {
+          pending: "Creating Post... 🙄",
+          success: "Post Created. 👌",
+          error: "Something went wrong. 😱",
+        });
+
+        const response = await createPost;
+
         if (!response.ok) {
-          throw new Error('Failed to create post');
+          resetForm();
+          setPreviews([]);
+          setIsOpenModal(false);
+
+          throw new Error("Failed to create post");
         }
 
         resetForm();
         setPreviews([]);
+        setIsOpenModal(false);
       } catch (error) {
         console.error("Error while creating post:", error);
       }
@@ -90,6 +105,8 @@ export default function CreatePost() {
 
   return (
     <>
+      <ToastContainer />
+
       <button
         className="absolute top-4 right-2 group cursor-pointer outline-none hover:rotate-90 duration-300"
         title="Create Post"
@@ -130,7 +147,11 @@ export default function CreatePost() {
                 name="content"
                 id=""
                 rows={4}
-                className="w-full rounded bg-white border-2 p-2"
+                className={`w-full rounded bg-white p-2 ${
+                  formik.touched.content && formik.errors.content
+                    ? "border-red-400 border-2"
+                    : "border-gray-900/25 border"
+                }`}
                 value={formik.values.content}
                 onChange={formik.handleChange}
               />
@@ -214,7 +235,7 @@ export default function CreatePost() {
                     </label>
                   </div>
                   <p className="text-xs leading-5 text-gray-600">
-                    PNG, JPG, JPEG up to 5MB
+                    PNG, JPG, JPEG up to 3MB
                   </p>
                 </div>
               </div>
@@ -222,10 +243,10 @@ export default function CreatePost() {
 
             <button
               type="submit"
-              disabled={formik.isSubmitting}
-              className="w-full rounded-md text-lg font-medium px-2 py-1 bg-purple-400 text-white"
+              disabled={formik.isSubmitting || !formik.isValid}
+              className="w-full rounded-md text-lg font-medium px-2 py-1 bg-purple-400 disabled:bg-purple-800/60 disabled:cursor-not-allowed text-white"
             >
-              {formik.isSubmitting ? "Posting..." : "Post"}
+              {formik.isSubmitting ? "Posting...🙄" : "Post"}
             </button>
           </div>
         </form>

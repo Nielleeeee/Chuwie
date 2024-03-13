@@ -1,6 +1,7 @@
 import type { NextRequest } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import { getXataClient } from "@/xata";
+import { currentUser } from "@clerk/nextjs";
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -14,7 +15,18 @@ export async function POST(req: NextRequest) {
 
   const xataClient = getXataClient();
 
+  const user = await currentUser();
+  const user_id = user?.id;
+  const author_username = user?.username;
+  const author_fullname =
+    user?.firstName && user?.lastName
+      ? `${user.firstName} ${user.lastName}`
+      : (user?.firstName ?? "") + (user?.lastName ?? "");
+
   try {
+    const mediaUrl: string[] = [];
+
+    // Upload file to cloudinary
     const uploadedMedia = await Promise.all(
       media.map(async (fileData: any) => {
         const buffer = Buffer.from(fileData.data);
@@ -26,6 +38,7 @@ export async function POST(req: NextRequest) {
                 reject(error);
                 return;
               }
+              mediaUrl.push(result?.secure_url as string);
               resolve(result);
             })
             .end(buffer);
@@ -33,14 +46,20 @@ export async function POST(req: NextRequest) {
       })
     );
 
-    uploadedMedia.map((result) => {
-      console.log(result.secure_url);
-    })
+    // Insert Data to xata database
+    const postData = {
+      user_id,
+      author_username,
+      author_fullname,
+      content,
+      media: mediaUrl,
+    };
+
+    const createPost = await xataClient.db.Post.create(postData);
 
     return new Response(
       JSON.stringify({
         message: "Images uploaded successfully",
-        uploadedMedia,
       }),
       {
         status: 200,
