@@ -4,11 +4,9 @@
 import React, { useState, useCallback } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { useDropzone } from "react-dropzone";
 import FormModal from "@/components/modal/formModal";
-
-import "react-toastify/dist/ReactToastify.css";
 
 export default function CreatePost() {
   const [previews, setPreviews] = useState<string[]>([]);
@@ -104,9 +102,7 @@ export default function CreatePost() {
   });
 
   return (
-    <>
-      <ToastContainer />
-
+    <div className="fixed bottom-20 right-[20px] flex flex-col gap-5 z-20">
       <button
         className="absolute top-4 right-2 group cursor-pointer outline-none hover:rotate-90 duration-300"
         title="Create Post"
@@ -251,6 +247,6 @@ export default function CreatePost() {
           </div>
         </form>
       </FormModal>
-    </>
+    </div>
   );
 }
