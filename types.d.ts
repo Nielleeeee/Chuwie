@@ -1,14 +1,14 @@
 interface PostData {
   author_fullname: string;
-  author_username: string | null;
+  author_username: string;
   content: string;
   id: string;
   media: string[];
-  user_id: string | null;
+  user_id: string;
   xata: {
-    createdAt: string;
-    updatedAt: string;
-    version: number;
+      createdAt: string;
+      updatedAt: string;
+      version: number;
   };
 }
 
