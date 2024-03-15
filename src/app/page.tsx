@@ -4,12 +4,13 @@ import CreatePost from "@/components/post/createPost";
 import Header from "@/components/layout/header";
 import { getAllPost } from "./actions/getPost";
 import { ToastContainer } from "react-toastify";
+import LoadMore from "@/components/load-more/loadMore";
 
 import "react-toastify/dist/ReactToastify.css";
 
 export default async function Home() {
   const user = await currentUser();
-  const post = await getAllPost();
+  const post = await getAllPost(1);
 
   return (
     <main className="min-h-screen bg-slate-700">
@@ -25,6 +26,7 @@ export default async function Home() {
           </h1>
 
           <Post allPostData={post} />
+          <LoadMore />
         </div>
       </section>
     </main>
