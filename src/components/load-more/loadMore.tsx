@@ -9,6 +9,7 @@ import { getAllPost } from "@/app/actions/getPost";
 export default function LoadMore() {
   const [posts, setPosts] = useState<PostData[]>([]);
   const [pageLoaded, setPageLoaded] = useState(1);
+  const [hasNextPost, setHasNextPost] = useState(true);
 
   const { ref, inView } = useInView();
 
@@ -17,6 +18,7 @@ export default function LoadMore() {
     const { posts, hasNextPage } = (await getAllPost(nextPage)) ?? [];
     setPosts((prevPost: any[]) => [...prevPost, ...posts]);
     setPageLoaded(nextPage);
+    setHasNextPost(hasNextPage);
   }, [pageLoaded, setPosts, setPageLoaded]);
 
   useEffect(() => {
@@ -51,9 +53,16 @@ export default function LoadMore() {
           ))}
       </section>
 
-      <div ref={ref} className="w-full py-10 flex justify-center items-center">
-        <PostLoader />
-      </div>
+      {hasNextPost ? (
+        <div
+          ref={ref}
+          className="w-full py-10 flex justify-center items-center"
+        >
+          <PostLoader />
+        </div>
+      ) : (
+        <div className="w-full text-white text-xl font-medium py-10 flex justify-center items-center">No more post available 😔</div>
+      )}
     </>
   );
 }
