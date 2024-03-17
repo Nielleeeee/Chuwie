@@ -1,13 +1,18 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
+import { useGetInitialPost } from "@/app/data/get-post";
 
-export default function Post({ allPostData }: any) {
-  const allPost = allPostData.posts;
+export default function Post() {
+  const { data } = useGetInitialPost();
+
+  const initialPost = data?.posts;
 
   return (
     <section className="flex flex-col">
-      {allPost.length !== 0 &&
-        allPost.map((post: PostData, index: number) => (
+      {initialPost?.length !== 0 &&
+        initialPost?.map((post: any, index: number) => (
           <div key={index} className="rounded-md bg-white p-4 my-4 shadow-md">
             <h3>{post.author_fullname}</h3>
             <p className="mb-4">{post.content}</p>
