@@ -1,8 +1,7 @@
 import { currentUser } from "@clerk/nextjs";
 import Post from "@/components/post/post";
 import CreatePost from "@/components/post/createPost";
-import Header from "@/components/layout/header";
-import { getAllPost, getInitialPost } from "./actions/getPost";
+import { getInitialPost } from "./actions/getPost";
 import { ToastContainer } from "react-toastify";
 import LoadMore from "@/components/load-more/loadMore";
 import {
@@ -25,7 +24,6 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-slate-700">
-      <Header />
       <ToastContainer />
 
       <section className="flex flex-col w-full max-w-3xl mx-auto px-4 md:px-8">
