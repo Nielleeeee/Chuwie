@@ -1,9 +1,20 @@
-import { getInitialPost } from "@/app/actions/getPost";
-import { useQuery } from "@tanstack/react-query";
+import { getInitialPost, getAllPost } from "@/app/actions/getPost";
+import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 
 export const useGetInitialPost = () => {
   return useQuery({
     queryFn: async () => getInitialPost(),
     queryKey: ["posts"],
-  })
-}
+  });
+};
+
+export const useGetAllPost = () => {
+  return useInfiniteQuery({
+    queryKey: ["allPosts"],
+    queryFn: ({ pageParam = 1 }) => getAllPost({ pageParam }) as any,
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      return lastPage;
+    },
+  });
+};
