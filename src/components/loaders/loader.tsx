@@ -14,10 +14,7 @@ export const AvatarLoader = () => {
 
 export const PostLoader = () => {
   return (
-    <div className="flex flex-row gap-2">
-      <div className="w-4 h-4 rounded-full bg-purple-400 animate-bounce"></div>
-      <div className="w-4 h-4 rounded-full bg-purple-400 animate-bounce [animation-delay:-.3s]"></div>
-      <div className="w-4 h-4 rounded-full bg-purple-400 animate-bounce [animation-delay:-.5s]"></div>
+    <div className="rounded-md w-full h-[500px] bg-white/80 animate-pulse p-4 my-4 shadow-md">
     </div>
   );
 };
