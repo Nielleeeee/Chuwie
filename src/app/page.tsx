@@ -3,7 +3,6 @@ import Post from "@/components/post/post";
 import CreatePost from "@/components/post/createPost";
 import { getInitialPost } from "./actions/getPost";
 import { ToastContainer } from "react-toastify";
-import LoadMore from "@/components/load-more/loadMore";
 import {
   QueryClient,
   HydrationBoundary,
@@ -36,7 +35,6 @@ export default async function Home() {
           <HydrationBoundary state={dehydrate(queryClient)}>
             <Post />
           </HydrationBoundary>
-          <LoadMore />
         </div>
       </section>
     </main>
