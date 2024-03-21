@@ -1,7 +1,7 @@
 import { currentUser } from "@clerk/nextjs";
 import Post from "@/components/post/post";
 import CreatePost from "@/components/post/createPost";
-import { getInitialPost } from "./actions/getPost";
+import { getInitialPost, getAllPost } from "@/app/actions/getPost";
 import { ToastContainer } from "react-toastify";
 import {
   QueryClient,
@@ -16,10 +16,10 @@ export default async function Home() {
 
   const queryClient = new QueryClient();
 
-  await queryClient.prefetchQuery({
-    queryKey: ["posts"],
-    queryFn: getInitialPost,
-  });
+  // await queryClient.prefetchQuery({
+  //   queryKey: ["posts"],
+  //   queryFn: getInitialPost,
+  // });
 
   return (
     <main className="min-h-screen bg-slate-700">
@@ -32,6 +32,7 @@ export default async function Home() {
           <h1 className="text-purple-100 mb-10 text-xl">
             Welcome, <span className="font-semibold">{user?.firstName}!</span>
           </h1>
+
           <HydrationBoundary state={dehydrate(queryClient)}>
             <Post />
           </HydrationBoundary>
