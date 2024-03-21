@@ -18,5 +18,5 @@ export default function DateFormat({ date }: { date: Date }) {
     formattedDate = format(createdAt, "MMMM d, yyyy");
   }
 
-  return <span>{formattedDate}</span>;
+  return <span className="text-sm text-gray-600">{formattedDate}</span>;
 }
