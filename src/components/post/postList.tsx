@@ -17,6 +17,7 @@ export default function PostList({ PostData }: any) {
               {userId == post.user_id && (
                 <DeletePost
                   postId={post.id}
+                  postMediaID={[]}
                   className="absolute top-4 right-4"
                 />
               )}

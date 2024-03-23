@@ -3,14 +3,9 @@
 import React from "react";
 import { handleDeletePost } from "@/app/actions/deletePost";
 
-interface DeletePost {
-  postId: number;
-  className?: string;
-}
-
-export default function DeletePost({ postId, className }: DeletePost) {
+export default function DeletePost({ postId, className, postMediaID }: DeletePostParams) {
   const deletePost = async () => {
-    await handleDeletePost({ postId });
+    await handleDeletePost({ postId, postMediaID });
   };
 
   return (
