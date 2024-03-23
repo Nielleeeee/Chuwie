@@ -26,3 +26,9 @@ interface FormModalProps {
   modalTitle?: String;
   children: React.ReactNode;
 }
+
+interface DeletePostParams {
+  postId: string;
+  className?: string;
+  postMediaID?: string[];
+}
