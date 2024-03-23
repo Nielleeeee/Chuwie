@@ -11,7 +11,10 @@ cloudinary.config({
   api_secret: process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET,
 });
 
-export const handleDeletePost = async ({ postId }: { postId: string }) => {
+export const handleDeletePost = async ({
+  postId,
+  postMediaID,
+}: DeletePostParams) => {
   const xataClient = getXataClient();
 
   const user = await currentUser();
@@ -19,10 +22,16 @@ export const handleDeletePost = async ({ postId }: { postId: string }) => {
 
   try {
     const deletePost = await xataClient.db.Post.delete(postId);
-    
-    // Remove image from cloudinary
 
-    revalidateTag("allPosts")
+    if (postMediaID?.length !== 0) {
+      postMediaID?.map(async (mediaID) => {
+        await cloudinary.uploader
+          .destroy(mediaID)
+          .then((result) => console.log(result));
+      });
+    }
+
+    revalidateTag("allPosts");
     return { deletePost };
   } catch (error) {
     console.error(error);
