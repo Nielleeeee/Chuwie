@@ -2,10 +2,21 @@
 
 import React from "react";
 import { handleDeletePost } from "@/app/actions/deletePost";
+import { toast } from "react-toastify";
 
-export default function DeletePost({ postId, className, postMedia }: DeletePostParams) {
+export default function DeletePost({
+  postId,
+  className,
+  postMedia,
+}: DeletePostParams) {
   const deletePost = async () => {
-    await handleDeletePost({ postId, postMedia });
+    const deletePostResponse = handleDeletePost({ postId, postMedia });
+
+    await toast.promise(deletePostResponse, {
+      pending: "Deleting Post... 🙄",
+      success: "Post Deleted. 👌",
+      error: "Something went wrong. 😱",
+    });
   };
 
   return (
