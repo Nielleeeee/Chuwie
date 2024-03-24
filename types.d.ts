@@ -30,5 +30,5 @@ interface FormModalProps {
 interface DeletePostParams {
   postId: string;
   className?: string;
-  postMediaID?: string[];
+  postMedia?: string[];
 }
