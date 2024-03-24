@@ -13,8 +13,8 @@ cloudinary.config({
 export async function POST(req: NextRequest) {
   const body = await req.json();
   const { content, media } = body;
-  const path = req.nextUrl.searchParams.get('path') || "/";
-  
+  const path = req.nextUrl.searchParams.get("path") || "/";
+
   const xataClient = getXataClient();
 
   const user = await currentUser();
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       : (user?.firstName ?? "") + (user?.lastName ?? "");
 
   try {
-    const mediaUrl: string[] = [];
+    const mediaUrl: { secure_url: string; public_id: string }[] = [];
 
     // Upload file to cloudinary
     const uploadedMedia = await Promise.all(
@@ -40,7 +40,10 @@ export async function POST(req: NextRequest) {
                 reject(error);
                 return;
               }
-              mediaUrl.push(result?.secure_url as string);
+              mediaUrl.push({
+                secure_url: result?.secure_url as string,
+                public_id: result?.public_id as string,
+              });
               resolve(result);
             })
             .end(buffer);
