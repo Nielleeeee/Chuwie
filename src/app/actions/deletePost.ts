@@ -17,20 +17,19 @@ export const handleDeletePost = async ({
   const xataClient = getXataClient();
 
   try {
-    const deletePost = await xataClient.db.Post.delete(postId);
-
     if (postMedia?.length !== 0) {
       postMedia?.map(async (media: any) => {
-        await cloudinary.uploader
-          .destroy(media.public_id)
-          .then((result) => console.log(result));
+        const deleteImage = await cloudinary.uploader.destroy(media.public_id);
       });
     }
 
+    const deletePost = await xataClient.db.Post.delete(postId);
+
     revalidatePath("/");
-    
+
+    return { status: true, error: null };
   } catch (error) {
     console.error(error);
-    throw error;
+    return { status: null, error: error };
   }
 };
