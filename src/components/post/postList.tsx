@@ -28,16 +28,18 @@ export default function PostList({ PostData }: any) {
 
               <figure className="flex flex-row gap-2 w-full overflow-hidden">
                 {post.media.length !== 0 &&
-                  post.media.map((url: string, key: number) => (
-                    <Image
-                      key={key}
-                      src={url}
-                      alt={post.author_username ?? ""}
-                      width={1000}
-                      height={1000}
-                      className="w-full max-h-[500px] object-cover rounded"
-                    />
-                  ))}
+                  post.media.map(
+                    (item: { secure_url: string }, key: number) => (
+                      <Image
+                        key={key}
+                        src={item.secure_url}
+                        alt={post.author_username ?? ""}
+                        width={1000}
+                        height={1000}
+                        className="w-full max-h-[500px] object-cover rounded"
+                      />
+                    )
+                  )}
               </figure>
             </div>
           </TransitionMoveUp>
