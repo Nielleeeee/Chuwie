@@ -2,8 +2,7 @@
 
 import { v2 as cloudinary } from "cloudinary";
 import { getXataClient } from "@/xata";
-import { currentUser } from "@clerk/nextjs";
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -13,26 +12,23 @@ cloudinary.config({
 
 export const handleDeletePost = async ({
   postId,
-  postMediaID,
+  postMedia,
 }: DeletePostParams) => {
   const xataClient = getXataClient();
-
-  const user = await currentUser();
-  const user_id = user?.id;
 
   try {
     const deletePost = await xataClient.db.Post.delete(postId);
 
-    if (postMediaID?.length !== 0) {
-      postMediaID?.map(async (mediaID) => {
+    if (postMedia?.length !== 0) {
+      postMedia?.map(async (media: any) => {
         await cloudinary.uploader
-          .destroy(mediaID)
+          .destroy(media.public_id)
           .then((result) => console.log(result));
       });
     }
 
-    revalidateTag("allPosts");
-    return { deletePost };
+    revalidatePath("/");
+    
   } catch (error) {
     console.error(error);
     throw error;
