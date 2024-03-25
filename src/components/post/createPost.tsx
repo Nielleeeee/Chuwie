@@ -7,10 +7,13 @@ import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { useDropzone } from "react-dropzone";
 import FormModal from "@/components/modal/formModal";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function CreatePost() {
   const [previews, setPreviews] = useState<string[]>([]);
   const [isOpenModal, setIsOpenModal] = useState(false);
+
+  const queryClient = useQueryClient();
 
   const formik = useFormik<CreatePost>({
     initialValues: {
@@ -62,6 +65,7 @@ export default function CreatePost() {
           throw new Error("Failed to create post");
         }
 
+        queryClient.invalidateQueries({ queryKey: ["allPosts"] });
         resetForm();
         setPreviews([]);
         setIsOpenModal(false);
