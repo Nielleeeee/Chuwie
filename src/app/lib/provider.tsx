@@ -6,7 +6,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import Header from "@/components/layout/header";
 // import Footer from "@/components/layout/footer";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -16,8 +16,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 10 * 1000,
-            refetchInterval: 10 * 1000,
+            staleTime: 30 * 1000,
+            refetchInterval: 60 * 1000,
           },
         },
       })
