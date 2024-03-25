@@ -2,7 +2,6 @@
 
 import { v2 as cloudinary } from "cloudinary";
 import { getXataClient } from "@/xata";
-import { revalidatePath } from "next/cache";
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -24,8 +23,6 @@ export const handleDeletePost = async ({
     }
 
     const deletePost = await xataClient.db.Post.delete(postId);
-
-    revalidatePath("/");
 
     return { status: true, error: null };
   } catch (error) {
