@@ -3,12 +3,15 @@
 import React from "react";
 import { handleDeletePost } from "@/app/actions/deletePost";
 import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function DeletePost({
   postId,
   className,
   postMedia,
 }: DeletePostParams) {
+  const queryClient = useQueryClient();
+
   const deletePost = async () => {
     const deletePostResponse = handleDeletePost({ postId, postMedia });
 
@@ -17,6 +20,14 @@ export default function DeletePost({
       success: "Post Deleted. 👌",
       error: "Something went wrong. 😱",
     });
+
+    const response = await deletePostResponse;
+
+    if (!response.status) {
+      console.error(response.error);
+    }
+
+    queryClient.invalidateQueries({ queryKey: ["allPosts"] });
   };
 
   return (
