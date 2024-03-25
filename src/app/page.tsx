@@ -16,11 +16,6 @@ export default async function Home() {
 
   const queryClient = new QueryClient();
 
-  // await queryClient.prefetchQuery({
-  //   queryKey: ["posts"],
-  //   queryFn: getInitialPost,
-  // });
-
   return (
     <main className="min-h-screen bg-slate-700">
       <ToastContainer />
