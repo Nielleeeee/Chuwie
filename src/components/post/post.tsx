@@ -1,12 +1,9 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Image from "next/image";
 import { useGetAllPost } from "@/app/data/get-post";
-import { TransitionMoveUp } from "@/components/animation/transition";
 import { useInView } from "react-intersection-observer";
 import { PostLoader } from "@/components/loaders/loader";
-import DateFormat from "@/app/lib/date-format";
 import PostList from "./postList";
 
 export default function Post() {
