@@ -1,7 +1,6 @@
 import { currentUser } from "@clerk/nextjs";
 import Post from "@/components/post/post";
 import CreatePost from "@/components/post/createPost";
-import { getInitialPost, getAllPost } from "@/app/actions/getPost";
 import { ToastContainer } from "react-toastify";
 import {
   QueryClient,
