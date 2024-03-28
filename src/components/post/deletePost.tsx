@@ -8,7 +8,6 @@ import DialogModal from "@/components/modal/dialog";
 
 export default function DeletePost({
   postId,
-  className,
   postMedia,
 }: DeletePostParams) {
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -40,7 +39,7 @@ export default function DeletePost({
   return (
     <>
       <button
-        className={`${className}`}
+        className={``}
         onClick={() => setIsOpenModal(true)}
         title="Delete Post"
       >
