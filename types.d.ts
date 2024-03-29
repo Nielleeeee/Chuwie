@@ -18,6 +18,7 @@ interface CreatePost {
   userId?: string;
   authorFullname?: string;
   authorUsername?: string;
+  toDelete?: [];
 }
 
 interface FormModalProps {
@@ -30,4 +31,9 @@ interface FormModalProps {
 interface DeletePostParams {
   postId: string;
   postMedia?: string[];
+}
+
+interface MediaItem {
+  secure_url?: string;
+  public_id?: string;
 }
