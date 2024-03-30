@@ -6,19 +6,24 @@ interface PostData {
   media: string[];
   user_id: string;
   xata: {
-      createdAt: string;
-      updatedAt: string;
-      version: number;
+    createdAt: string;
+    updatedAt: string;
+    version: number;
   };
 }
 
 interface CreatePost {
   content: string;
-  media: [];
+  media: any[];
   userId?: string;
   authorFullname?: string;
   authorUsername?: string;
-  toDelete?: [];
+}
+
+interface UpdatePost {
+  content: string;
+  media: any[];
+  toDelete?: string[];
 }
 
 interface FormModalProps {
@@ -26,6 +31,7 @@ interface FormModalProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   modalTitle?: String;
   children: React.ReactNode;
+  onRequestClose?: () => void;
 }
 
 interface DeletePostParams {
