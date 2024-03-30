@@ -6,14 +6,16 @@ export default function FormModal({
   setIsOpen,
   modalTitle,
   children,
+  onRequestClose,
 }: FormModalProps) {
+  const handleCloseModal = () => {
+    setIsOpen(false);
+    onRequestClose?.();
+  };
+
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog
-        as="div"
-        className="relative z-50"
-        onClose={() => setIsOpen(false)}
-      >
+      <Dialog as="div" className="relative z-50" onClose={handleCloseModal}>
         <Transition.Child
           enter="ease-out duration-300"
           enterFrom="opacity-0"
@@ -50,7 +52,7 @@ export default function FormModal({
                   <button
                     type="submit"
                     className="inline-flex justify-center rounded-md border border-transparent p-2 text-sm font-medium text-black"
-                    onClick={() => setIsOpen(false)}
+                    onClick={handleCloseModal}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
