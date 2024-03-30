@@ -2,7 +2,6 @@ import type { NextRequest } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import { getXataClient } from "@/xata";
 import { currentUser } from "@clerk/nextjs";
-import { revalidatePath } from "next/cache";
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -61,8 +60,6 @@ export async function POST(req: NextRequest) {
     };
 
     const createPost = await xataClient.db.Post.create(postData);
-
-    revalidatePath(path);
 
     return new Response(
       JSON.stringify({
