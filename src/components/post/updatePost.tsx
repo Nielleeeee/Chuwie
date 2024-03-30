@@ -17,17 +17,15 @@ export default function UpdatePost({ currentData }: any) {
 
   useEffect(() => {
     setPreviews(
-      currentData.media.map((mediaItem: { secure_url: string }) => mediaItem.secure_url)
+      currentData.media.map((mediaItem: MediaItem) => mediaItem.secure_url)
     );
   }, [currentData.media]);
 
-  const formik = useFormik<CreatePost>({
+  const formik = useFormik<UpdatePost>({
     initialValues: {
       content: currentData.content,
-      // Use the link of the image to add it into this media array.
-      media: currentData.media.map((mediaItem: { secure_url: string }) => ({
-        path: mediaItem.secure_url,
-      })),
+      media: [],
+      toDelete: [],
     },
 
     validationSchema: Yup.object({
@@ -50,6 +48,7 @@ export default function UpdatePost({ currentData }: any) {
           media: filesData,
         };
 
+        console.log(postData);
       } catch (error) {
         console.error("Error while creating post:", error);
       }
@@ -57,28 +56,31 @@ export default function UpdatePost({ currentData }: any) {
   });
 
   const onDrop = useCallback(
-  (acceptedFiles: File[]) => {
-    // Update previews state with URLs of dropped files
-    const filePreviews = acceptedFiles.map((file) => URL.createObjectURL(file));
-    setPreviews((prevPreviews) => [...prevPreviews, ...filePreviews]);
-    // Update formik values.media and previews with acceptedFiles and currentData.media
-    formik.setFieldValue("media", [
-      ...formik.values.media,
-      ...acceptedFiles,
-      ...currentData.media,
-    ]);
-  },
-  [formik, currentData.media]
-);
+    (acceptedFiles: File[]) => {
+      // Update previews state with URLs of dropped files
+      const filePreviews = acceptedFiles.map((file) =>
+        URL.createObjectURL(file)
+      );
+      setPreviews((prevPreviews) => [...prevPreviews, ...filePreviews]);
+      formik.setFieldValue("media", [...formik.values.media, ...acceptedFiles]);
+    },
+    [formik]
+  );
 
   const removePreview = (
     event: React.MouseEvent<HTMLButtonElement>,
-    index: number
+    index: number,
+    publicID?: string
   ) => {
     event.stopPropagation();
     setPreviews((prevPreviews) => prevPreviews.filter((_, i) => i !== index));
 
     const updatedMedia = formik.values.media.filter((_, i) => i !== index);
+    const toDeleteMedia = [...(formik.values.toDelete as []), publicID];
+
+    console.log(toDeleteMedia);
+
+    formik.setFieldValue("toDelete", toDeleteMedia);
     formik.setFieldValue("media", updatedMedia);
   };
 
@@ -113,7 +115,17 @@ export default function UpdatePost({ currentData }: any) {
       <FormModal
         isOpen={isOpenModal}
         setIsOpen={setIsOpenModal}
-        modalTitle={"Create post"}
+        modalTitle={"Update post"}
+        onRequestClose={() => {
+          // Reset form values to initial values when modal is closed
+          formik.resetForm();
+          // Reset previews to initial previews
+          setPreviews(
+            currentData.media.map(
+              (mediaItem: { secure_url: string }) => mediaItem.secure_url
+            )
+          );
+        }}
       >
         <form onSubmit={formik.handleSubmit}>
           <div className="flex flex-col gap-4">
@@ -169,7 +181,11 @@ export default function UpdatePost({ currentData }: any) {
                                 <button
                                   type="button"
                                   onClick={(event) =>
-                                    removePreview(event, index)
+                                    removePreview(
+                                      event,
+                                      index,
+                                      currentData.media[index]?.public_id
+                                    )
                                   }
                                   className="p-2 rounded-full absolute -top-4 -right-4 bg-slate-800 z-10"
                                 >
@@ -225,7 +241,7 @@ export default function UpdatePost({ currentData }: any) {
 
             <button
               type="submit"
-              disabled={formik.isSubmitting || !formik.isValid}
+              disabled={formik.isSubmitting || !formik.isValid || !formik.dirty}
               className="w-full rounded-md text-lg font-medium px-2 py-1 bg-purple-400 disabled:bg-purple-800/60 disabled:cursor-not-allowed text-white"
             >
               {formik.isSubmitting ? "Posting...🙄" : "Post"}
