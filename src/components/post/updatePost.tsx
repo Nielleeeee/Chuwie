@@ -15,12 +15,6 @@ export default function UpdatePost({ currentData }: any) {
 
   const queryClient = useQueryClient();
 
-  useEffect(() => {
-    setPreviews(
-      currentData.media.map((mediaItem: MediaItem) => mediaItem.secure_url)
-    );
-  }, [currentData.media]);
-
   const formik = useFormik<UpdatePost>({
     initialValues: {
       content: currentData.content,
@@ -46,14 +40,53 @@ export default function UpdatePost({ currentData }: any) {
         const postData = {
           ...values,
           media: filesData,
+          post_id: currentData.id,
         };
+
+        const updatePost = fetch("/api/update-post", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(postData),
+        });
+
+        await toast.promise(updatePost, {
+          pending: "Updating post... 🙄",
+          success: "Post updated. 👌",
+          error: "Something went wrong. 😱",
+        });
+
+        const response = await updatePost;
+
+        if (!response.ok) {
+          resetForm();
+          setPreviews([]);
+          setIsOpenModal(false);
+
+          throw new Error("Failed to update post");
+        }
+
+        queryClient.invalidateQueries({ queryKey: ["allPosts"] });
+        resetForm();
+        setPreviews([]);
+        setIsOpenModal(false);
 
         console.log(postData);
       } catch (error) {
-        console.error("Error while creating post:", error);
+        console.error("Error while updating post:", error);
       }
     },
   });
+
+  useEffect(() => {
+    setPreviews(
+      currentData.media.map((mediaItem: MediaItem) => mediaItem.secure_url)
+    );
+
+    formik.setFieldValue("content", currentData.content);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentData, formik.values.content]);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -77,8 +110,6 @@ export default function UpdatePost({ currentData }: any) {
 
     const updatedMedia = formik.values.media.filter((_, i) => i !== index);
     const toDeleteMedia = [...(formik.values.toDelete as []), publicID];
-
-    console.log(toDeleteMedia);
 
     formik.setFieldValue("toDelete", toDeleteMedia);
     formik.setFieldValue("media", updatedMedia);
@@ -244,7 +275,7 @@ export default function UpdatePost({ currentData }: any) {
               disabled={formik.isSubmitting || !formik.isValid || !formik.dirty}
               className="w-full rounded-md text-lg font-medium px-2 py-1 bg-purple-400 disabled:bg-purple-800/60 disabled:cursor-not-allowed text-white"
             >
-              {formik.isSubmitting ? "Posting...🙄" : "Post"}
+              {formik.isSubmitting ? "Updating...🙄" : "Update"}
             </button>
           </div>
         </form>
