@@ -12,7 +12,6 @@ cloudinary.config({
 export async function POST(req: NextRequest) {
   const body = await req.json();
   const { content, media } = body;
-  const path = req.nextUrl.searchParams.get("path") || "/";
 
   const xataClient = getXataClient();
 
@@ -28,7 +27,7 @@ export async function POST(req: NextRequest) {
     const mediaUrl: { secure_url: string; public_id: string }[] = [];
 
     // Upload file to cloudinary
-    const uploadedMedia = await Promise.all(
+    await Promise.all(
       media.map(async (fileData: any) => {
         const buffer = Buffer.from(fileData.data);
 
@@ -59,11 +58,11 @@ export async function POST(req: NextRequest) {
       media: mediaUrl,
     };
 
-    const createPost = await xataClient.db.Post.create(postData);
+    await xataClient.db.Post.create(postData);
 
     return new Response(
       JSON.stringify({
-        message: "Images uploaded successfully",
+        message: "Post created successfully",
       }),
       {
         status: 200,
@@ -73,15 +72,12 @@ export async function POST(req: NextRequest) {
       }
     );
   } catch (error) {
-    console.error("Error while uploading images:", error);
-    return new Response(
-      JSON.stringify({ message: "Could not upload images" }),
-      {
-        status: 500,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    console.error("Error while creating post:", error);
+    return new Response(JSON.stringify({ message: "Could not create post" }), {
+      status: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   }
 }
