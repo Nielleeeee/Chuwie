@@ -11,58 +11,75 @@ cloudinary.config({
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { content, media } = body;
-  const path = req.nextUrl.searchParams.get("path") || "/";
+  const { content, media, post_id, toDelete } = body;
 
   const xataClient = getXataClient();
-
-  const user = await currentUser();
-  const user_id = user?.id;
-  const author_username = user?.username;
-  const author_fullname =
-    user?.firstName && user?.lastName
-      ? `${user.firstName} ${user.lastName}`
-      : (user?.firstName ?? "") + (user?.lastName ?? "");
 
   try {
     const mediaUrl: { secure_url: string; public_id: string }[] = [];
 
-    // Add to delete handler in here
+    // Delete updated image in cloudinary
+    if (toDelete?.length !== 0) {
+      toDelete?.map(async (media: any) => {
+        const deleteImage = await cloudinary.uploader.destroy(media.public_id);
+      });
+    }
 
     // Upload file to cloudinary
-    const uploadedMedia = await Promise.all(
-      media.map(async (fileData: any) => {
-        const buffer = Buffer.from(fileData.data);
+    if (media.length !== 0) {
+      await Promise.all(
+        media.map(async (fileData: any) => {
+          const buffer = Buffer.from(fileData.data);
 
-        return new Promise((resolve, reject) => {
-          cloudinary.uploader
-            .upload_stream({ tags: ["chuwie"] }, function (error, result) {
-              if (error) {
-                reject(error);
-                return;
-              }
-              mediaUrl.push({
-                secure_url: result?.secure_url as string,
-                public_id: result?.public_id as string,
-              });
-              resolve(result);
-            })
-            .end(buffer);
-        });
-      })
-    );
+          return new Promise((resolve, reject) => {
+            cloudinary.uploader
+              .upload_stream({ tags: ["chuwie"] }, function (error, result) {
+                if (error) {
+                  reject(error);
+                  return;
+                }
+                mediaUrl.push({
+                  secure_url: result?.secure_url as string,
+                  public_id: result?.public_id as string,
+                });
+                resolve(result);
+              })
+              .end(buffer);
+          });
+        })
+      );
+    }
 
-    // Insert Data to xata database
-    const postData = {
-      content,
-      media: mediaUrl,
-    };
+    const updatePost = await xataClient.sql`
+      BEGIN;
+    
+      -- Step 1: Delete media objects with matching public_id from the media array
+      UPDATE Post
+      SET media = jsonb_agg(media_item)
+      FROM (
+        SELECT jsonb_array_elements(media) AS media_item
+        WHERE NOT (media_item->>'public_id' = ANY (${toDelete}))
+      ) AS media_filtered
+      WHERE id = ${post_id};
+    
+      -- Step 2: Append new media URLs to the media array
+      UPDATE Post
+      SET media = media || ${mediaUrl}
+      WHERE id = ${post_id};
 
-    const updatePost = await xataClient.db.Post.create(postData);
+      -- Step 3: Update Content
+      UPDATE Post
+      SET content = ${content}
+      WHERE id = ${post_id}
+    
+      COMMIT;
+    `;
+
+    console.log(updatePost);
 
     return new Response(
       JSON.stringify({
-        message: "Images uploaded successfully",
+        message: "Post Updated successfully",
       }),
       {
         status: 200,
@@ -72,9 +89,9 @@ export async function POST(req: NextRequest) {
       }
     );
   } catch (error) {
-    console.error("Error while uploading images:", error);
+    console.error("Error while updating post:", error);
     return new Response(
-      JSON.stringify({ message: "Could not upload images" }),
+      JSON.stringify({ message: "Could not update images" }),
       {
         status: 500,
         headers: {
