@@ -27,6 +27,8 @@ export default function UpdatePost({ currentData }: any) {
       media: Yup.array().required(),
     }),
 
+    enableReinitialize: true,
+
     onSubmit: async (values, { resetForm }) => {
       try {
         const filesData = await Promise.all(
@@ -71,8 +73,6 @@ export default function UpdatePost({ currentData }: any) {
         resetForm();
         setPreviews([]);
         setIsOpenModal(false);
-
-        console.log(postData);
       } catch (error) {
         console.error("Error while updating post:", error);
       }
@@ -83,10 +83,7 @@ export default function UpdatePost({ currentData }: any) {
     setPreviews(
       currentData.media.map((mediaItem: MediaItem) => mediaItem.secure_url)
     );
-
-    formik.setFieldValue("content", currentData.content);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentData, formik.values.content]);
+  }, [currentData]);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
