@@ -18,10 +18,10 @@ export async function POST(req: NextRequest) {
   try {
     const mediaUrl: { secure_url: string; public_id: string }[] = [];
 
-    // Delete updated image in cloudinary
+    // // Delete updated image in cloudinary
     if (toDelete?.length !== 0) {
-      toDelete?.map(async (media: any) => {
-        const deleteImage = await cloudinary.uploader.destroy(media.public_id);
+      toDelete?.map(async (publicId: any) => {
+        const deleteImage = await cloudinary.uploader.destroy(publicId);
       });
     }
 
@@ -39,8 +39,8 @@ export async function POST(req: NextRequest) {
                   return;
                 }
                 mediaUrl.push({
-                  secure_url: result?.secure_url as string,
                   public_id: result?.public_id as string,
+                  secure_url: result?.secure_url as string,
                 });
                 resolve(result);
               })
@@ -50,32 +50,45 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const updatePost = await xataClient.sql`
-      BEGIN;
-    
-      -- Step 1: Delete media objects with matching public_id from the media array
-      UPDATE Post
-      SET media = jsonb_agg(media_item)
-      FROM (
-        SELECT jsonb_array_elements(media) AS media_item
-        WHERE NOT (media_item->>'public_id' = ANY (${toDelete}))
-      ) AS media_filtered
-      WHERE id = ${post_id};
-    
-      -- Step 2: Append new media URLs to the media array
-      UPDATE Post
-      SET media = media || ${mediaUrl}
-      WHERE id = ${post_id};
+    const updatePostResult = await xataClient.transactions.run([
+      {
+        update: {
+          table: "Post",
+          id: post_id,
+          fields: {
+            media: {
+              $set: {
+                $filter: {
+                  input: "$media",
+                  as: "media_item",
+                  cond: { $not: { $in: ["$$media_item.public_id", toDelete] } },
+                },
+              },
+            },
+          },
+        },
+      },
+      {
+        update: {
+          table: "Post",
+          id: post_id,
+          fields: {
+            media: { $concatArrays: ["$media", mediaUrl] },
+          },
+        },
+      },
+      {
+        update: {
+          table: "Post",
+          id: post_id,
+          fields: {
+            content: content,
+          },
+        },
+      },
+    ]);
 
-      -- Step 3: Update Content
-      UPDATE Post
-      SET content = ${content}
-      WHERE id = ${post_id}
-    
-      COMMIT;
-    `;
-
-    console.log(updatePost);
+    console.log(mediaUrl);
 
     return new Response(
       JSON.stringify({
