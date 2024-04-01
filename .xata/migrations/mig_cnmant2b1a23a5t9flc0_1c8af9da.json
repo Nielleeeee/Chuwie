@@ -1,0 +1,16 @@
+{
+  "id": "mig_cnmant2b1a23a5t9flc0",
+  "parentID": "mig_cnmanpib1a23a5t9flb0",
+  "checksum": "1:1c8af9da057a8ef51372d652eb18efdaee82fd040870f1f239087a1405b1ac3c",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "content",
+          "type": "text"
+        },
+        "table": "Post"
+      }
+    }
+  ]
+}

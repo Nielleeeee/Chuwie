@@ -1,0 +1,17 @@
+{
+  "id": "mig_cnlmt0sftgm5g25gd43g",
+  "parentID": "mig_cnlmrt2uns06l108ntpg",
+  "checksum": "1:0eb3874816fa37dd179c0442ba41a103ef0567abc731a04cb5216a38dd950f95",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "post_content",
+          "type": "string",
+          "defaultValue": ""
+        },
+        "table": "Post"
+      }
+    }
+  ]
+}

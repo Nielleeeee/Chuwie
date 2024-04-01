@@ -1,0 +1,13 @@
+{
+  "id": "mig_cnmanpib1a23a5t9flb0",
+  "parentID": "mig_cnmafgcftgm5g25gd870",
+  "checksum": "1:e57bccd433837c2c99a2c119e163450aa10fe7890fcab0a22012c48da3098a76",
+  "operations": [
+    {
+      "removeColumn": {
+        "column": "content",
+        "table": "Post"
+      }
+    }
+  ]
+}

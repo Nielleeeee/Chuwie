@@ -1,0 +1,13 @@
+{
+  "id": "mig_co5dkd9ue7a71jh4f4eg",
+  "parentID": "mig_co5dfehue7a71jh4f48g",
+  "checksum": "1:dd7be6633bbb93b61b925d279a44eef30849423170dcd6f3acf1f724164ef24e",
+  "operations": [
+    {
+      "removeColumn": {
+        "column": "mediaTest",
+        "table": "Post"
+      }
+    }
+  ]
+}

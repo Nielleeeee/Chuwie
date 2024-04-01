@@ -1,0 +1,16 @@
+{
+  "id": "mig_cnlmu3cftgm5g25gd46g",
+  "parentID": "mig_cnlmtj2b1a23a5t9fgk0",
+  "checksum": "1:0f59367f5252f7714b3f82540b4961831106a7410bd40dab8f1d27b94c6154f5",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "media",
+          "type": "file[]"
+        },
+        "table": "Post"
+      }
+    }
+  ]
+}

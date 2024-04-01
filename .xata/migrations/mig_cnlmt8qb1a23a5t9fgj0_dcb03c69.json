@@ -1,0 +1,14 @@
+{
+  "id": "mig_cnlmt8qb1a23a5t9fgj0",
+  "parentID": "mig_cnlmt0sftgm5g25gd43g",
+  "checksum": "1:dcb03c6930aeffb726ecc30f7c8a5f7a6bf5c78f08a69e56424052da901a4672",
+  "operations": [
+    {
+      "renameColumn": {
+        "newName": "content",
+        "oldName": "post_content",
+        "table": "Post"
+      }
+    }
+  ]
+}

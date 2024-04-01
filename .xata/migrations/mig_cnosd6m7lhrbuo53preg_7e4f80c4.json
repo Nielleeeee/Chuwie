@@ -1,0 +1,16 @@
+{
+  "id": "mig_cnosd6m7lhrbuo53preg",
+  "parentID": "mig_cnosahqfmfo00i20m79g",
+  "checksum": "1:7e4f80c43956f6daf966edd7017582228f292ffa16f6508deef01f88e06995a0",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "media",
+          "type": "json"
+        },
+        "table": "Post"
+      }
+    }
+  ]
+}

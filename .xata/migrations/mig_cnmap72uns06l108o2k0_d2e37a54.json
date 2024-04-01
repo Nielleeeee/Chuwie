@@ -1,0 +1,16 @@
+{
+  "id": "mig_cnmap72uns06l108o2k0",
+  "parentID": "mig_cnmap3cftgm5g25gd8b0",
+  "checksum": "1:d2e37a54cc79ccc5c0b59ae21c012f93468d4a856d60c51715ac87c1a20e6c5b",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "author_fullname",
+          "type": "string"
+        },
+        "table": "Post"
+      }
+    }
+  ]
+}

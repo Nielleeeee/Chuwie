@@ -1,0 +1,11 @@
+{
+  "id": "mig_cnlmrt2uns06l108ntpg",
+  "checksum": "1:4f9c06d4c44993f11904f5f2cf1e172211a55eb04393f541e56865ec7e864b17",
+  "operations": [
+    {
+      "addTable": {
+        "table": "Post"
+      }
+    }
+  ]
+}

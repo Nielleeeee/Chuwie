@@ -1,0 +1,16 @@
+{
+  "id": "mig_cnotbau7lhrbuo53pro0",
+  "parentID": "mig_cnotb74tf3ofa3gtg780",
+  "checksum": "1:fb77ec32162588b27207baf64a8c7263532fc858cb8df177b10ab0295123f7d1",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "user_id",
+          "type": "string"
+        },
+        "table": "Post"
+      }
+    }
+  ]
+}

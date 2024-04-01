@@ -10,11 +10,11 @@ const tables = [
   {
     name: "Post",
     columns: [
-      { name: "user_id", type: "string", unique: true },
       { name: "author_username", type: "string" },
       { name: "content", type: "text" },
       { name: "author_fullname", type: "string" },
       { name: "media", type: "json" },
+      { name: "user_id", type: "string" },
     ],
   },
   {

@@ -1,0 +1,17 @@
+{
+  "id": "mig_cnlmtj2b1a23a5t9fgk0",
+  "parentID": "mig_cnlmt8qb1a23a5t9fgj0",
+  "checksum": "1:2217ac08a726c34cb3c34a890ddeed3ea9859555ea14646337b237474eacd590",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "user_id",
+          "type": "string",
+          "unique": true
+        },
+        "table": "Post"
+      }
+    }
+  ]
+}

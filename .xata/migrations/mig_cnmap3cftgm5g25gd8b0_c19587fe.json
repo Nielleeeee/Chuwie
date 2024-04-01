@@ -1,0 +1,14 @@
+{
+  "id": "mig_cnmap3cftgm5g25gd8b0",
+  "parentID": "mig_cnmant2b1a23a5t9flc0",
+  "checksum": "1:c19587fec07a66ed1bb220d0da16f333c30e1a2792e34e0e05a10a854bf68e4a",
+  "operations": [
+    {
+      "renameColumn": {
+        "newName": "author_username",
+        "oldName": "user_name",
+        "table": "Post"
+      }
+    }
+  ]
+}

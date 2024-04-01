@@ -1,0 +1,13 @@
+{
+  "id": "mig_cnosahqfmfo00i20m79g",
+  "parentID": "mig_cnmap72uns06l108o2k0",
+  "checksum": "1:f81c19ed309778edfc958ec24f15797c7e72bfb580ab27d10ab3579370c39a07",
+  "operations": [
+    {
+      "removeColumn": {
+        "column": "media",
+        "table": "Post"
+      }
+    }
+  ]
+}

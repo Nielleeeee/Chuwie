@@ -1,0 +1,16 @@
+{
+  "id": "mig_co5dfehue7a71jh4f48g",
+  "parentID": "mig_cnotbau7lhrbuo53pro0",
+  "checksum": "1:72a28cd5bed68d0ae419dd53dc165ac71d4c794c0bc856ad84c0d3c364f5b2b6",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "mediaTest",
+          "type": "json"
+        },
+        "table": "Post"
+      }
+    }
+  ]
+}

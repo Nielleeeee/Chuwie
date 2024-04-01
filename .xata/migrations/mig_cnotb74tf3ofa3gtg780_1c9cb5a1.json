@@ -1,0 +1,13 @@
+{
+  "id": "mig_cnotb74tf3ofa3gtg780",
+  "parentID": "mig_cnosd6m7lhrbuo53preg",
+  "checksum": "1:1c9cb5a105e53e5e85459e2498fd1c551171c260a104492eeb2c7aff62d68d00",
+  "operations": [
+    {
+      "removeColumn": {
+        "column": "user_id",
+        "table": "Post"
+      }
+    }
+  ]
+}
