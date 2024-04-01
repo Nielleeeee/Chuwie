@@ -43,6 +43,7 @@ export default function UpdatePost({ currentData }: any) {
           ...values,
           media: filesData,
           post_id: currentData.id,
+          currentMedia: currentData.media,
         };
 
         const updatePost = fetch("/api/update-post", {
