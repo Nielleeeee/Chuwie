@@ -43,3 +43,11 @@ interface MediaItem {
   secure_url?: string;
   public_id?: string;
 }
+
+interface UpdatePostRoute {
+  content: string;
+  media?: any;
+  post_id: string;
+  toDelete?: string[];
+  currentMedia: MediaItem[];
+}
