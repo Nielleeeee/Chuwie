@@ -23,7 +23,7 @@ export default function PostList({ PostData }: any) {
 
                 {userId == post.user_id && (
                   <div className="flex gap-2">
-                    <UpdatePost currentData={post} />
+                    <UpdatePost key={index} currentData={post} />
 
                     <DeletePost postId={post.id} postMedia={post.media} />
                   </div>
