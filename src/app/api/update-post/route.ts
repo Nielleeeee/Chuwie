@@ -11,7 +11,8 @@ cloudinary.config({
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { content, media, post_id, toDelete } = body;
+  const { content, media, post_id, toDelete, currentMedia }: UpdatePostRoute =
+    body;
 
   const xataClient = getXataClient();
 
@@ -50,21 +51,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const filteredMedia = currentMedia.filter(
+      (mediaItem) =>
+        !toDelete?.some((publicId) => publicId === mediaItem.public_id)
+    );
+
+    const updatedMedia = JSON.stringify([...filteredMedia, ...mediaUrl]);
+
     const updatePostResult = await xataClient.transactions.run([
       {
         update: {
           table: "Post",
           id: post_id,
           fields: {
-            media: {
-              $set: {
-                $filter: {
-                  input: "$media",
-                  as: "media_item",
-                  cond: { $not: { $in: ["$$media_item.public_id", toDelete] } },
-                },
-              },
-            },
+            content,
           },
         },
       },
@@ -73,22 +73,11 @@ export async function POST(req: NextRequest) {
           table: "Post",
           id: post_id,
           fields: {
-            media: { $concatArrays: ["$media", mediaUrl] },
-          },
-        },
-      },
-      {
-        update: {
-          table: "Post",
-          id: post_id,
-          fields: {
-            content: content,
+            media: updatedMedia,
           },
         },
       },
     ]);
-
-    console.log(mediaUrl);
 
     return new Response(
       JSON.stringify({
