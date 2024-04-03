@@ -5,6 +5,7 @@ import DateFormat from "@/app/lib/date-format";
 import DeletePost from "@/components/post/deletePost";
 import { useAuth } from "@clerk/nextjs";
 import UpdatePost from "./updatePost";
+import KebabDropdown from "../ui/dropdown/kebabDropdown";
 
 export default function PostList({ PostData }: any) {
   const { userId } = useAuth();
@@ -22,11 +23,11 @@ export default function PostList({ PostData }: any) {
                 </div>
 
                 {userId == post.user_id && (
-                  <div className="flex gap-2">
+                  <KebabDropdown>
                     <UpdatePost key={index} currentData={post} />
 
                     <DeletePost postId={post.id} postMedia={post.media} />
-                  </div>
+                  </KebabDropdown>
                 )}
               </div>
 
