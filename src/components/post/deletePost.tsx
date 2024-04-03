@@ -6,10 +6,7 @@ import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 import DialogModal from "@/components/modal/dialog";
 
-export default function DeletePost({
-  postId,
-  postMedia,
-}: DeletePostParams) {
+export default function DeletePost({ postId, postMedia }: DeletePostParams) {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const queryClient = useQueryClient();
@@ -39,7 +36,7 @@ export default function DeletePost({
   return (
     <>
       <button
-        className={``}
+        className="flex gap-2 justify-start items-center bg-white hover:bg-red-200 p-2 rounded-md"
         onClick={() => setIsOpenModal(true)}
         title="Delete Post"
       >
@@ -57,6 +54,10 @@ export default function DeletePost({
           <line x1="10" y1="11" x2="10" y2="17"></line>
           <line x1="14" y1="11" x2="14" y2="17"></line>
         </svg>
+
+        <span className="hidden sm:flex text-red-400 font-medium">
+          Delete
+        </span>
       </button>
 
       <DialogModal isOpen={isOpenModal} setIsOpen={setIsOpenModal}>
