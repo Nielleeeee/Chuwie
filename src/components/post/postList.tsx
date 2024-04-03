@@ -1,11 +1,11 @@
 import React from "react";
-import Image from "next/image";
 import { TransitionMoveUp } from "@/components/animation/transition";
 import DateFormat from "@/app/lib/date-format";
 import DeletePost from "@/components/post/deletePost";
 import { useAuth } from "@clerk/nextjs";
 import UpdatePost from "./updatePost";
 import KebabDropdown from "../ui/dropdown/kebabDropdown";
+import MediaList from "./mediaList";
 
 export default function PostList({ PostData }: any) {
   const { userId } = useAuth();
@@ -33,21 +33,7 @@ export default function PostList({ PostData }: any) {
 
               <p className="mb-4">{post.content}</p>
 
-              <figure className="flex flex-row gap-2 w-full overflow-hidden">
-                {post.media.length !== 0 &&
-                  post.media.map(
-                    (item: { secure_url: string }, key: number) => (
-                      <Image
-                        key={key}
-                        src={item.secure_url}
-                        alt={post.author_username ?? ""}
-                        width={1000}
-                        height={1000}
-                        className="w-full max-h-[500px] object-cover rounded"
-                      />
-                    )
-                  )}
-              </figure>
+              <MediaList postData={post} />
             </div>
           </TransitionMoveUp>
         ))}
