@@ -11,7 +11,6 @@ export default function MediaList({ postData }: any) {
   return (
     <figure className="w-full px-2 pb-4">
       <Swiper
-        // install Swiper modules
         modules={[Navigation, Pagination]}
         spaceBetween={50}
         slidesPerView={1}
@@ -19,6 +18,7 @@ export default function MediaList({ postData }: any) {
         pagination={{ clickable: true }}
         onSwiper={(swiper) => console.log(swiper)}
         onSlideChange={() => console.log("slide change")}
+      
       >
         {postData.media.length !== 0 &&
           postData.media.map((item: { secure_url: string }, key: number) => (
