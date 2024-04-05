@@ -30,7 +30,12 @@ export default function NotFound() {
 
         <p className="my-4 text-gray-500">We can&apos;t find that page.</p>
 
-        <Link href={"/"} className="mt-4 px-3 py-2 text-white rounded-md bg-purple-500 hover:bg-purple-700">Go Back</Link>
+        <Link
+          href={"/"}
+          className="mt-4 px-3 py-2 text-white rounded-md bg-purple-500 hover:bg-purple-700"
+        >
+          Go Back
+        </Link>
       </div>
     </div>
   );

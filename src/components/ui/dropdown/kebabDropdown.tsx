@@ -53,7 +53,7 @@ const KebabDot = () => {
       fill="none"
       className="h-6 w-6 stroke-black"
     >
-      <g clip-path="url(#clip0_105_1881)">
+      <g clipPath="url(#clip0_105_1881)">
         <rect
           height="0.01"
           strokeLinejoin="round"

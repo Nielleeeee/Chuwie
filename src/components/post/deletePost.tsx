@@ -55,9 +55,7 @@ export default function DeletePost({ postId, postMedia }: DeletePostParams) {
           <line x1="14" y1="11" x2="14" y2="17"></line>
         </svg>
 
-        <span className="hidden sm:flex text-red-400 font-medium">
-          Delete
-        </span>
+        <span className="hidden sm:flex text-red-400 font-medium">Delete</span>
       </button>
 
       <DialogModal isOpen={isOpenModal} setIsOpen={setIsOpenModal}>

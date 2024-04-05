@@ -14,7 +14,6 @@ export const AvatarLoader = () => {
 
 export const PostLoader = () => {
   return (
-    <div className="rounded-md w-full h-[500px] bg-white/80 animate-pulse p-4 my-4 shadow-md">
-    </div>
+    <div className="rounded-md w-full h-[500px] bg-white/80 animate-pulse p-4 my-4 shadow-md"></div>
   );
 };
