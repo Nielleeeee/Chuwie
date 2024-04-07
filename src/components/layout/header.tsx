@@ -3,31 +3,31 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ClerkLoaded, ClerkLoading, UserButton } from "@clerk/nextjs";
+import { ClerkLoaded, ClerkLoading, UserButton, UserProfile } from "@clerk/nextjs";
 import { AvatarLoader } from "@/components/loaders/loader";
 
 export default function Header() {
-  const [isActive, setIsActive] = useState(false);
+  // const [isActive, setIsActive] = useState(false);
 
-  const handleActive = () => {
-    if (isActive) {
-      setIsActive(false);
-    } else {
-      setIsActive(true);
-    }
-  };
+  // const handleActive = () => {
+  //   if (isActive) {
+  //     setIsActive(false);
+  //   } else {
+  //     setIsActive(true);
+  //   }
+  // };
 
-  useEffect(() => {
-    if (isActive) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "visible";
-    }
+  // useEffect(() => {
+  //   if (isActive) {
+  //     document.body.style.overflow = "hidden";
+  //   } else {
+  //     document.body.style.overflow = "visible";
+  //   }
 
-    return () => {
-      document.body.style.overflow = "visible";
-    };
-  }, [isActive]);
+  //   return () => {
+  //     document.body.style.overflow = "visible";
+  //   };
+  // }, [isActive]);
 
   return (
     <header className="px-5 bg-[#0f0c1b] sticky top-0 z-50 border-b border-b-gray-600">
@@ -59,6 +59,7 @@ export default function Header() {
               </ClerkLoading>
 
               <ClerkLoaded>
+                <UserProfile />
                 <UserButton afterSignOutUrl="/sign-in" />
               </ClerkLoaded>
             </li>
@@ -76,7 +77,7 @@ export default function Header() {
           <span></span>
         </label>  */}
 
-          {/* Sidebar */}
+          {/* Sidebar
           {isActive && (
             <div className="fixed inset-0 bg-primary z-20 flex justify-center items-center p-8 transform translate-x-0 transition-transform duration-300 ease-in-out">
               <ul className="text-2xl text-center flex flex-col gap-6">
@@ -147,7 +148,7 @@ export default function Header() {
                 </li>
               </ul>
             </div>
-          )}
+          )} */}
         </nav>
       </div>
     </header>
