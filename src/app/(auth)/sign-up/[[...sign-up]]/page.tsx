@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { SignUp, ClerkLoading, ClerkLoaded } from "@clerk/nextjs";
 import { GradiantLoader } from "@/components/loaders/loader";
+import { shadesOfPurple } from '@clerk/themes';
 
 export default function Signup() {
   return (
@@ -29,6 +30,7 @@ export default function Signup() {
               <ClerkLoaded>
                 <SignUp
                   appearance={{
+                    baseTheme: shadesOfPurple,
                     elements: {
                       socialButtonsBlockButton: "bg-purple-100",
                       formButtonPrimary:
