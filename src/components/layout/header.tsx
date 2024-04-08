@@ -59,7 +59,6 @@ export default function Header() {
               </ClerkLoading>
 
               <ClerkLoaded>
-                <UserProfile />
                 <UserButton afterSignOutUrl="/sign-in" />
               </ClerkLoaded>
             </li>
