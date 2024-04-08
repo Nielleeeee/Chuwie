@@ -1,6 +1,7 @@
 "use server";
 
 import { getXataClient } from "@/xata";
+import { clerkClient } from "@clerk/nextjs";
 
 const xataClient = getXataClient();
 
@@ -59,11 +60,16 @@ export const getAllPost = async ({ pageParam = 1 }, pageSize = 3) => {
     ).getPaginated({ pagination: { size: pageSize, offset } });
 
     // Preprocess posts
-    const processedPosts = post.records.map((record) => {
-      // Convert xata to plain object
-      const xata = { ...record.xata };
-      return { ...record, xata };
-    });
+    const processedPosts = await Promise.all(
+      post.records.map(async (record) => {
+        const userInfo = await clerkClient.users.getUser(record.user_id || "");
+
+        const userImage = userInfo.imageUrl;
+
+        const xata = { ...record.xata };
+        return { ...record, xata, userImage };
+      })
+    );
 
     const hasNextPage = post.hasNextPage();
     return { posts: processedPosts, hasNextPage };
