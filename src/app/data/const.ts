@@ -1,1 +1,1 @@
-export const innerRoutes = ["/"];
+export const innerRoutes = ["/", "/sample"];
