@@ -14,6 +14,22 @@ export const AvatarLoader = () => {
 
 export const PostLoader = () => {
   return (
-    <div className="rounded-md w-full h-[500px] bg-white/80 animate-pulse p-4 my-4 shadow-md"></div>
+    <div className="rounded-md w-full h-[600px] bg-white/80 animate-pulse p-4 my-4 shadow-md">
+      <div className="flex items-center space-x-2 my-4">
+        <div className="animate-pulse rounded-full bg-gray-500 h-10 w-10"></div>
+        <div className="space-y-2">
+          <div className="animate-pulse rounded-md bg-gray-500 h-4 w-[200px]">
+            {" "}
+          </div>
+          <div className="animate-pulse rounded-md bg-gray-500 h-4 w-[100px]">
+            {" "}
+          </div>
+        </div>
+      </div>
+
+      <div className="animate-pulse rounded-md bg-gray-500 w-full h-full max-h-[500px]">
+        {" "}
+      </div>
+    </div>
   );
 };
