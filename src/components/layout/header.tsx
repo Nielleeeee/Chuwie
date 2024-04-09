@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ClerkLoaded, ClerkLoading, UserButton, UserProfile } from "@clerk/nextjs";
+import { ClerkLoaded, ClerkLoading, UserButton } from "@clerk/nextjs";
 import { AvatarLoader } from "@/components/loaders/loader";
 
 export default function Header() {
