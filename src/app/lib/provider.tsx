@@ -9,6 +9,7 @@ import Footer from "@/components/layout/footer";
 // import Footer from "@/components/layout/footer";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { innerRoutes } from "@/app/data/const";
+import { Analytics } from "@vercel/analytics/react"
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -27,6 +28,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <ClerkProvider>
+      <Analytics />
       <QueryClientProvider client={queryClient}>
         {/* <ReactQueryDevtools /> */}
         {innerRoutes.includes(pathname) && <Header />}
