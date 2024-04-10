@@ -75,7 +75,6 @@ export default function MediaList({ postData }: any) {
         }}
         on={{
           view: ({ index }) => activeImageChange(index),
-          exited: () => console.log(activeImage),
         }}
       />
     </figure>
