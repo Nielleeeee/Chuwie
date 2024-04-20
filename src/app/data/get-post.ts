@@ -13,7 +13,7 @@ export const useGetAllPost = () => {
     queryKey: ["allPosts"],
     queryFn: ({ pageParam = 1 }) => getAllPost({ pageParam }) as any,
     initialPageParam: 1,
-    getNextPageParam: (lastPage, allPages) => {
+    getNextPageParam: (allPages) => {
       const hasNextPage = allPages[allPages.length - 1]?.hasNextPage;
       return hasNextPage ? allPages.length + 1 : undefined;
     },
