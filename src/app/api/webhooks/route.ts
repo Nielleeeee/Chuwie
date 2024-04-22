@@ -1,6 +1,7 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
+import createUser from "@/app/actions/createUser";
 
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
@@ -47,11 +48,46 @@ export async function POST(req: Request) {
     });
   }
 
-  // Get the ID and type
-  const { id } = evt.data;
   const eventType = evt.type;
 
-  console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
+  switch (eventType) {
+    case "user.created":
+      const {
+        id,
+        email_addresses,
+        image_url,
+        first_name,
+        last_name,
+        username,
+      } = evt.data;
+
+      const userInfo = {
+        clerk_id: id,
+        email: email_addresses[0].email_address,
+        username: username || "",
+        first_name,
+        last_name,
+        profile_picture: image_url,
+      };
+
+      const createdUser = await createUser(userInfo);
+
+      console.log("Created User: ", createdUser);
+
+      break;
+
+    case "user.deleted":
+      // code block
+      break;
+
+    case "user.updated":
+      // code block
+      break;
+
+    default:
+    // code block
+  }
+
   console.log("Webhook body:", body);
 
   return new Response("", { status: 200 });
