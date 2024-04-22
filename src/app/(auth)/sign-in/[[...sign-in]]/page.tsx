@@ -27,12 +27,12 @@ export default function Signin() {
                 <SignIn
                   appearance={{
                     baseTheme: shadesOfPurple,
-                    elements: {
-                      socialButtonsBlockButton: "bg-purple-100",
-                      formButtonPrimary:
-                        "bg-purple-400 hover:bg-purple-500 text-sm normal-case",
-                      footerActionLink: "text-purple-700",
-                    },
+                    // elements: {
+                    //   socialButtonsBlockButton: "bg-purple-100",
+                    //   formButtonPrimary:
+                    //     "bg-purple-400 hover:bg-purple-500 text-sm normal-case",
+                    //   footerActionLink: "text-purple-700",
+                    // },
                   }}
                 />
               </ClerkLoaded>
