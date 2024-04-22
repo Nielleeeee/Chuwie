@@ -51,3 +51,12 @@ interface UpdatePostRoute {
   toDelete?: string[];
   currentMedia: MediaItem[];
 }
+
+interface UserInfoProps {
+  clerk_id: string;
+  email: string;
+  username: string;
+  first_name: string;
+  last_name: string;
+  profile_picture: string;
+}
