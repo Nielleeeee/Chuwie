@@ -1,0 +1,12 @@
+{
+  "id": "mig_coinsahi8ag8nohmg96g",
+  "parentID": "mig_co5duimpe2mbada2upcg",
+  "checksum": "1:180cae4d8eacd0e01c325caf20cb0b6eeb6100f9ba1586f9ae55f0e5fe75a027",
+  "operations": [
+    {
+      "addTable": {
+        "table": "User"
+      }
+    }
+  ]
+}

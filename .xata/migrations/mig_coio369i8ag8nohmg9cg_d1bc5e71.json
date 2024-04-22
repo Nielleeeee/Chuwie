@@ -1,0 +1,16 @@
+{
+  "id": "mig_coio369i8ag8nohmg9cg",
+  "parentID": "mig_coio2vep7f5ih5v53ks0",
+  "checksum": "1:d1bc5e7148450bb7ffc70149c5a27d936cac9801e30c0d1f562f85241b387dc4",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "profile_picture",
+          "type": "string"
+        },
+        "table": "User"
+      }
+    }
+  ]
+}

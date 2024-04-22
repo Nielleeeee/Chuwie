@@ -1,0 +1,13 @@
+{
+  "id": "mig_co5duimpe2mbada2upcg",
+  "parentID": "mig_co5dubepe2mbada2upag",
+  "checksum": "1:3457bcbb65291bd96aff5c149eade40de04e837b15c71310df5816810b193d60",
+  "operations": [
+    {
+      "removeColumn": {
+        "column": "mediaTest",
+        "table": "Post"
+      }
+    }
+  ]
+}

@@ -25,6 +25,17 @@ const tables = [
       { name: "user_id", type: "string" },
     ],
   },
+  {
+    name: "User",
+    columns: [
+      { name: "clerk_id", type: "string", unique: true },
+      { name: "email", type: "string", unique: true },
+      { name: "username", type: "string", unique: true },
+      { name: "first_name", type: "string" },
+      { name: "last_name", type: "string" },
+      { name: "profile_picture", type: "string" },
+    ],
+  },
 ] as const;
 
 export type SchemaTables = typeof tables;
@@ -36,9 +47,13 @@ export type PostRecord = Post & XataRecord;
 export type Comment = InferredTypes["Comment"];
 export type CommentRecord = Comment & XataRecord;
 
+export type User = InferredTypes["User"];
+export type UserRecord = User & XataRecord;
+
 export type DatabaseSchema = {
   Post: PostRecord;
   Comment: CommentRecord;
+  User: UserRecord;
 };
 
 const DatabaseClient = buildClient();
