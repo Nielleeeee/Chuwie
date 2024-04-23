@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import getUser from "@/app/actions/getUser";
+import getUser from "@/app/actions/post/getUser";
 
 // Instead of user id, try finding the username.
 
