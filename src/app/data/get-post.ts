@@ -1,4 +1,4 @@
-import { getInitialPost, getAllPost } from "@/app/actions/getPost";
+import { getInitialPost, getAllPost } from "@/app/actions/post/getPost";
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 
 export const useGetInitialPost = () => {

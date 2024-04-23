@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { handleDeletePost } from "@/app/actions/deletePost";
+import { handleDeletePost } from "@/app/actions/post/deletePost";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 import DialogModal from "@/components/modal/dialog";

@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { PostLoader } from "../loaders/loader";
 import Image from "next/image";
-import { getMorePost } from "@/app/actions/getPost";
+import { getMorePost } from "@/app/actions/post/getPost";
 import { TransitionMoveUp } from "@/components/animation/transition";
 
 export default function LoadMore() {
