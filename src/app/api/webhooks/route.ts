@@ -1,7 +1,10 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
-import createUser from "@/app/actions/createUser";
+import { clerkClient } from "@clerk/nextjs";
+import createUser from "@/app/actions/user/createUser";
+import deleteUser from "@/app/actions/user/deleteUser";
+import updateUser from "@/app/actions/user/updateUser";
 
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
@@ -52,40 +55,55 @@ export async function POST(req: Request) {
 
   switch (eventType) {
     case "user.created":
-      const {
-        id,
-        email_addresses,
-        image_url,
-        first_name,
-        last_name,
-        username,
-      } = evt.data;
-
-      const userInfo = {
-        clerk_id: id,
-        email: email_addresses[0].email_address,
-        username: username || "",
-        first_name,
-        last_name,
-        profile_picture: image_url,
+      const createUserInfo = {
+        clerk_id: evt.data.id,
+        email: evt.data.email_addresses[0].email_address,
+        username: evt.data.username || "",
+        first_name: evt.data.first_name,
+        last_name: evt.data.last_name,
+        profile_picture: evt.data.image_url,
       };
 
-      const createdUser = await createUser(userInfo);
+      const createdUser = await createUser(createUserInfo);
 
-      console.log("Created User: ", createdUser);
+      if (createdUser && createdUser.id) {
+        await clerkClient.users.updateUserMetadata(evt.data.id, {
+          publicMetadata: {
+            user_id: createdUser.id,
+          },
+        });
+      }
+
+      break;
+
+    case "user.updated":
+      const updateUserInfo = {
+        clerk_id: evt.data.id,
+        email: evt.data.email_addresses[0].email_address,
+        username: evt.data.username || "",
+        first_name: evt.data.first_name,
+        last_name: evt.data.last_name,
+        profile_picture: evt.data.image_url,
+        user_id: evt.data.public_metadata.user_id as string,
+      };
+
+      const updatedUser = await updateUser(updateUserInfo);
+
+      console.log("Updated User: ", updatedUser);
 
       break;
 
     case "user.deleted":
-      // code block
-      break;
+      const clerk_id = evt.data.id || "";
 
-    case "user.updated":
-      // code block
+      const deletedUser = await deleteUser(clerk_id);
+
+      console.log("Deleted User: ", deletedUser);
+
       break;
 
     default:
-    // code block
+      console.error("Incorrect Event Type");
   }
 
   console.log("Webhook body:", body);
