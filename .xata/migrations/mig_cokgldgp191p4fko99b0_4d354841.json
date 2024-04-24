@@ -1,0 +1,19 @@
+{
+  "id": "mig_cokgldgp191p4fko99b0",
+  "parentID": "mig_coio369i8ag8nohmg9cg",
+  "checksum": "1:4d354841a8084876177270a43d792b8b378ad128055cd6a8b800408fb431a374",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "posts",
+          "type": "link",
+          "link": {
+            "table": "Post"
+          }
+        },
+        "table": "User"
+      }
+    }
+  ]
+}

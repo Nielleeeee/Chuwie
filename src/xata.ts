@@ -15,6 +15,7 @@ const tables = [
       { name: "author_fullname", type: "string" },
       { name: "media", type: "json" },
       { name: "user_id", type: "string" },
+      { name: "author", type: "link", link: { table: "User" } },
     ],
   },
   {
@@ -35,6 +36,7 @@ const tables = [
       { name: "last_name", type: "string" },
       { name: "profile_picture", type: "string" },
     ],
+    revLinks: [{ column: "author", table: "Post" }],
   },
 ] as const;
 
