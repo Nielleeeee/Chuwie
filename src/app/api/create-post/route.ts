@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
 
   const user = await currentUser();
   const user_id = user?.id;
+  const author_id = (user?.publicMetadata.user_id as string) || "";
   const author_username = user?.username;
   const author_fullname =
     user?.firstName && user?.lastName
@@ -56,6 +57,7 @@ export async function POST(req: NextRequest) {
       author_fullname,
       content,
       media: mediaUrl,
+      author: author_id,
     };
 
     await xataClient.db.Post.create(postData);
