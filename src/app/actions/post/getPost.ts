@@ -66,8 +66,9 @@ export const getAllPost = async ({ pageParam = 1 }, pageSize = 3) => {
 
         const userImage = userInfo.imageUrl;
 
+        const author = { ...record.author };
         const xata = { ...record.xata };
-        return { ...record, xata, userImage };
+        return { ...record, xata, userImage, author };
       })
     );
 
