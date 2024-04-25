@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
-import getUser from "@/app/actions/post/getUser";
-
-// Instead of user id, try finding the username.
+import getUser from "@/app/actions/user/getUser";
+import Image from "next/image";
 
 export default async function ProfilePage({
   params,
@@ -14,7 +13,19 @@ export default async function ProfilePage({
     notFound();
   }
 
-  console.log(userInfo);
-
-  return <div>{params.slug}</div>;
+  return (
+    <main>
+      <section>
+        <Image
+          src={userInfo.profile_picture || ""}
+          alt={userInfo.username || ""}
+          height={100}
+          width={100}
+        />
+        <h2>
+          {userInfo.first_name} {userInfo.last_name} ({userInfo.username})
+        </h2>
+      </section>
+    </main>
+  );
 }
