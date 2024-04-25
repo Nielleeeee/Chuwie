@@ -7,6 +7,7 @@ import UpdatePost from "@/components/post/updatePost";
 import KebabDropdown from "@/components/ui/dropdown/kebabDropdown";
 import MediaList from "@/components/post/mediaList";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function PostList({ PostData }: any) {
   const { userId } = useAuth();
@@ -18,7 +19,7 @@ export default function PostList({ PostData }: any) {
           <TransitionMoveUp key={index}>
             <div className="relative rounded-md bg-white p-4 my-4 shadow-md">
               <div className="flex mb-4">
-                <div className="flex flex-row items-center w-full">
+                <Link href={`profile/${post.author_username}`} className="flex flex-row items-center w-full">
                   <Image
                     src={post.userImage}
                     alt={post.author_username}
@@ -31,7 +32,7 @@ export default function PostList({ PostData }: any) {
                     <h3 className="font-semibold">{post.author_fullname}</h3>
                     <DateFormat date={post.xata.createdAt} />
                   </div>
-                </div>
+                </Link>
 
                 {userId == post.user_id && (
                   <KebabDropdown>
