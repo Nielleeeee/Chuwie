@@ -6,10 +6,9 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
-// import Footer from "@/components/layout/footer";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { innerRoutes } from "@/app/data/const";
-import { Analytics } from "@vercel/analytics/react"
+import { outerRoutes } from "@/app/data/const";
+import { Analytics } from "@vercel/analytics/react";
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -31,9 +30,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       <Analytics />
       <QueryClientProvider client={queryClient}>
         {/* <ReactQueryDevtools /> */}
-        {innerRoutes.includes(pathname) && <Header />}
+        {!outerRoutes.includes(pathname) && <Header />}
         {children}
-        {(innerRoutes.includes(pathname)) && <Footer />}
+        {!outerRoutes.includes(pathname) && <Footer />}
       </QueryClientProvider>
     </ClerkProvider>
   );
