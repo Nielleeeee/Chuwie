@@ -6,6 +6,50 @@ import createUser from "@/app/actions/user/createUser";
 import deleteUser from "@/app/actions/user/deleteUser";
 import updateUser from "@/app/actions/user/updateUser";
 
+const handleUserCreated = async (data: any) => {
+  const createUserInfo = {
+    clerk_id: data.id,
+    email: data.email_addresses[0]?.email_address || "",
+    username: data.username || "",
+    first_name: data.first_name || "",
+    last_name: data.last_name || "",
+    profile_picture: data.image_url || "",
+  };
+
+  const createdUser = await createUser(createUserInfo);
+
+  if (createdUser?.id) {
+    await clerkClient.users.updateUserMetadata(data.id, {
+      publicMetadata: {
+        user_id: createdUser.id,
+      },
+    });
+  }
+};
+
+const handleUserUpdated = async (data: any) => {
+  const updateUserInfo = {
+    clerk_id: data.id,
+    email: data.email_addresses[0]?.email_address || "",
+    username: data.username || "",
+    first_name: data.first_name || "",
+    last_name: data.last_name || "",
+    profile_picture: data.image_url || "",
+    user_id: data.public_metadata?.user_id || "",
+  };
+
+  const updatedUser = await updateUser(updateUserInfo);
+
+  console.log("Updated User: ", updatedUser);
+};
+
+const handleUserDeleted = async (data: any) => {
+  const clerk_id = data.id || "";
+  const deletedUser = await deleteUser(clerk_id);
+
+  console.log("Deleted User: ", deletedUser);
+};
+
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
@@ -55,58 +99,20 @@ export async function POST(req: Request) {
 
   switch (eventType) {
     case "user.created":
-      const createUserInfo = {
-        clerk_id: evt.data.id,
-        email: evt.data.email_addresses[0].email_address,
-        username: evt.data.username || "",
-        first_name: evt.data.first_name,
-        last_name: evt.data.last_name,
-        profile_picture: evt.data.image_url,
-      };
-
-      const createdUser = await createUser(createUserInfo);
-
-      if (createdUser && createdUser.id) {
-        await clerkClient.users.updateUserMetadata(evt.data.id, {
-          publicMetadata: {
-            user_id: createdUser.id,
-          },
-        });
-      }
-
+      await handleUserCreated(evt.data);
       break;
 
     case "user.updated":
-      const updateUserInfo = {
-        clerk_id: evt.data.id,
-        email: evt.data.email_addresses[0].email_address,
-        username: evt.data.username || "",
-        first_name: evt.data.first_name,
-        last_name: evt.data.last_name,
-        profile_picture: evt.data.image_url,
-        user_id: evt.data.public_metadata.user_id as string,
-      };
-
-      const updatedUser = await updateUser(updateUserInfo);
-
-      console.log("Updated User: ", updatedUser);
-
+      await handleUserUpdated(evt.data);
       break;
 
     case "user.deleted":
-      const clerk_id = evt.data.id || "";
-
-      const deletedUser = await deleteUser(clerk_id);
-
-      console.log("Deleted User: ", deletedUser);
-
+      await handleUserDeleted(evt.data);
       break;
 
     default:
       console.error("Incorrect Event Type");
   }
-
-  console.log("Webhook body:", body);
 
   return new Response("", { status: 200 });
 }
