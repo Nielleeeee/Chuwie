@@ -79,3 +79,38 @@ export const getAllPost = async ({ pageParam = 1 }, pageSize = 3) => {
     throw error;
   }
 };
+
+export const getAllPostSpecificUser = async (
+  { pageParam = 1 },
+  pageSize = 3,
+  authorUsername: string
+) => {
+  try {
+    const offset = (pageParam - 1) * pageSize;
+    const post = await xataClient.db.Post.select(["*", "author.*"])
+      .filter({
+        "author.username": authorUsername,
+      })
+      .sort("xata.createdAt", "desc")
+      .getPaginated({ pagination: { size: pageSize, offset } });
+
+    // Preprocess posts
+    const processedPosts = await Promise.all(
+      post.records.map(async (record) => {
+        const userInfo = await clerkClient.users.getUser(record.user_id || "");
+
+        const userImage = userInfo.imageUrl;
+
+        const author = { ...record.author };
+        const xata = { ...record.xata };
+        return { ...record, xata, userImage, author };
+      })
+    );
+
+    const hasNextPage = post.hasNextPage();
+    return { posts: processedPosts, hasNextPage };
+  } catch (error) {
+    console.error("Failed to fetch post: ", error);
+    throw error;
+  }
+};
