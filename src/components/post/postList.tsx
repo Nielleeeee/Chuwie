@@ -19,9 +19,12 @@ export default function PostList({ PostData }: any) {
           <TransitionMoveUp key={index}>
             <div className="relative rounded-md bg-white p-4 my-4 shadow-md">
               <div className="flex mb-4">
-                <Link href={`profile/${post.author_username}`} className="flex flex-row items-center w-full">
+                <Link
+                  href={`profile/${post.author.username}`}
+                  className="flex flex-row items-center w-full"
+                >
                   <Image
-                    src={post.userImage}
+                    src={post.author.profile_picture}
                     alt={post.author_username}
                     height={100}
                     width={100}
@@ -29,12 +32,14 @@ export default function PostList({ PostData }: any) {
                   />
 
                   <div>
-                    <h3 className="font-semibold">{post.author_fullname}</h3>
+                    <h3 className="font-semibold">
+                      {post.author.first_name} {post.author.last_name}
+                    </h3>
                     <DateFormat date={post.xata.createdAt} />
                   </div>
                 </Link>
 
-                {userId == post.user_id && (
+                {userId == post.author.clerk_id && (
                   <KebabDropdown>
                     <UpdatePost key={index} currentData={post} />
 
