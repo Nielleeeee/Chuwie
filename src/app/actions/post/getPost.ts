@@ -54,21 +54,17 @@ export const getMorePost = async (page: number = 2, pageSize: number = 3) => {
 export const getAllPost = async ({ pageParam = 1 }, pageSize = 3) => {
   try {
     const offset = (pageParam - 1) * pageSize;
-    const post = await xataClient.db.Post.sort(
-      "xata.createdAt",
-      "desc"
-    ).getPaginated({ pagination: { size: pageSize, offset } });
+    const post = await xataClient.db.Post.select(["*", "author.*"])
+      .sort("xata.createdAt", "desc")
+      .getPaginated({ pagination: { size: pageSize, offset } });
 
     // Preprocess posts
     const processedPosts = await Promise.all(
       post.records.map(async (record) => {
-        const userInfo = await clerkClient.users.getUser(record.user_id || "");
-
-        const userImage = userInfo.imageUrl;
-
         const author = { ...record.author };
         const xata = { ...record.xata };
-        return { ...record, xata, userImage, author };
+        
+        return { ...record, xata, author };
       })
     );
 
@@ -97,13 +93,10 @@ export const getAllPostSpecificUser = async (
     // Preprocess posts
     const processedPosts = await Promise.all(
       post.records.map(async (record) => {
-        const userInfo = await clerkClient.users.getUser(record.user_id || "");
-
-        const userImage = userInfo.imageUrl;
-
         const author = { ...record.author };
         const xata = { ...record.xata };
-        return { ...record, xata, userImage, author };
+
+        return { ...record, xata, author };
       })
     );
 
