@@ -14,7 +14,7 @@ export default async function ProfilePage({
   }
 
   return (
-    <main>
+    <main className="min-h-screen bg-slate-700">
       <section>
         <Image
           src={userInfo.profile_picture || ""}
