@@ -53,11 +53,11 @@ interface UpdatePostRoute {
 }
 
 interface UserInfoProps {
-  clerk_id: string;
-  email: string;
-  username: string;
-  first_name: string;
-  last_name: string;
-  profile_picture: string;
-  user_id?: string;
+  clerk_id: string | null | undefined;
+  email: string | null | undefined;
+  username: string | null | undefined;
+  first_name: string | null | undefined;
+  last_name: string | null | undefined;
+  profile_picture: string | null | undefined;
+  user_id?: string | null | undefined;
 }
