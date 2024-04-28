@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 
-export default function UserInfo(userInfo: UserInfoProps) {
+export default function UserInfo(userInfo: UserInfo) {
   return (
     <section>
       <Image
