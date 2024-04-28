@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import getUser from "@/app/actions/user/getUser";
 import UserInfo from "@/components/user/userInfo";
-// import UserPost from "@/components/post/userPost";
+import UserPost from "@/components/post/userPost";
 
 export default async function ProfilePage({
   params,
@@ -18,7 +18,7 @@ export default async function ProfilePage({
     <main className="min-h-screen bg-slate-700">
       <UserInfo {...userInfo} />
 
-      {/* <UserPost username={userInfo.username || ""} /> */}
+      <UserPost username={userInfo.username || ""} />
     </main>
   );
 }
