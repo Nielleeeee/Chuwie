@@ -76,7 +76,7 @@ export const getAllPost = async ({ pageParam = 1 }, pageSize = 3) => {
   }
 };
 
-export const getAllPostSpecificUser = async (
+export const getAllUserPost = async (
   { pageParam = 1 },
   pageSize = 3,
   authorUsername: string
