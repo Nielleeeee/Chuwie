@@ -2,6 +2,7 @@ import { currentUser } from "@clerk/nextjs";
 import Post from "@/components/post/post";
 import CreatePost from "@/components/post/createPost";
 import { ToastContainer } from "react-toastify";
+import { MainContainer } from "@/components/container/container";
 import {
   QueryClient,
   HydrationBoundary,
@@ -19,7 +20,7 @@ export default async function Home() {
     <main className="min-h-screen bg-slate-700">
       <ToastContainer />
 
-      <section className="flex flex-col w-full max-w-3xl mx-auto px-4 md:px-8">
+      <MainContainer>
         <CreatePost />
 
         <div className="relative py-10">
@@ -31,7 +32,7 @@ export default async function Home() {
             <Post />
           </HydrationBoundary>
         </div>
-      </section>
+      </MainContainer>
     </main>
   );
 }
