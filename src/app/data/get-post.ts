@@ -26,7 +26,7 @@ export const useGetAllPost = () => {
 
 export const useGetAllUserPost = (username: string) => {
   return useInfiniteQuery({
-    queryKey: ["allPosts"],
+    queryKey: ["allUserPosts"],
     queryFn: ({ pageParam = 1 }, pageSize = 3) =>
       getAllUserPost({ pageParam }, pageSize, username) as any,
     initialPageParam: 1,
