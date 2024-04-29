@@ -30,7 +30,7 @@ export default function DeletePost({ postId, postMedia }: DeletePostParams) {
     setIsOpenModal(false);
     setIsDeleting(false);
 
-    queryClient.invalidateQueries({ queryKey: ["allPosts"] });
+    queryClient.invalidateQueries({ queryKey: ["allPosts", "allUserPosts"] });
   };
 
   return (

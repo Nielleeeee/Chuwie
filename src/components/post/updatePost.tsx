@@ -70,7 +70,7 @@ export default function UpdatePost({ currentData }: any) {
           throw new Error("Failed to update post");
         }
 
-        queryClient.invalidateQueries({ queryKey: ["allPosts"] });
+        queryClient.invalidateQueries({ queryKey: ["allPosts", "allUserPosts"] });
         resetForm();
         setPreviews([]);
         setIsOpenModal(false);

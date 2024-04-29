@@ -65,7 +65,9 @@ export default function CreatePost() {
           throw new Error("Failed to create post");
         }
 
-        queryClient.invalidateQueries({ queryKey: ["allPosts"] });
+        queryClient.invalidateQueries({
+          queryKey: ["allPosts", "allUserPosts"],
+        });
         resetForm();
         setPreviews([]);
         setIsOpenModal(false);
