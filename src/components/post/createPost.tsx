@@ -28,17 +28,26 @@ export default function CreatePost() {
 
     onSubmit: async (values, { resetForm }) => {
       try {
-        const filesData = await Promise.all(
+        const imageFiles = await Promise.all(
           values.media.map(async (file: File) => {
-            const arrayBuffer = await file.arrayBuffer();
-            const buffer = Buffer.from(arrayBuffer);
-            return buffer;
+            if (file.type.startsWith("image/")) {
+              const arrayBuffer = await file.arrayBuffer();
+              const imageBuffer = Buffer.from(arrayBuffer);
+              return imageBuffer;
+            }
+            return null;
           })
+        );
+
+        const filteredImageFiles = imageFiles.filter((file) => file !== null);
+
+        const videoFiles = values.media.filter((file) =>
+          file.type.startsWith("video/")
         );
 
         const postData = {
           ...values,
-          media: filesData,
+          media: { imageFiles: filteredImageFiles, videoFiles },
         };
 
         const createPost = fetch("/api/create-post", {
@@ -68,6 +77,7 @@ export default function CreatePost() {
         queryClient.invalidateQueries({
           queryKey: ["allPosts", "allUserPosts"],
         });
+
         resetForm();
         setPreviews([]);
         setIsOpenModal(false);
@@ -83,6 +93,7 @@ export default function CreatePost() {
       const filePreviews = acceptedFiles.map((file) =>
         URL.createObjectURL(file)
       );
+
       setPreviews((prevPreviews) => [...prevPreviews, ...filePreviews]);
       formik.setFieldValue("media", [...formik.values.media, ...acceptedFiles]);
     },
@@ -102,8 +113,14 @@ export default function CreatePost() {
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: { "image/*": [] },
-    maxSize: 1024 * 3000,
+    maxFiles: 10,
+    accept: {
+      "image/*": [],
+      "video/mp4": [".mp4"],
+      "video/mpeg": [".mpeg"],
+      "video/webm": [".webm"],
+    },
+    maxSize: 1024 * 100000,
     multiple: true,
   });
 
