@@ -75,7 +75,11 @@ export default function CreatePost() {
         }
 
         queryClient.invalidateQueries({
-          queryKey: ["allPosts", "allUserPosts"],
+          queryKey: ["allPosts"],
+        });
+        
+        queryClient.invalidateQueries({
+          queryKey: ["allUserPosts"],
         });
 
         resetForm();
