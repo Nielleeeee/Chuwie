@@ -13,23 +13,19 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const { content, media } = body;
 
+  const { imageFiles, videoFiles } = media;
+
   const xataClient = getXataClient();
 
   const user = await currentUser();
-  const user_id = user?.id;
   const author_id = (user?.publicMetadata.user_id as string) || "";
-  const author_username = user?.username;
-  const author_fullname =
-    user?.firstName && user?.lastName
-      ? `${user.firstName} ${user.lastName}`
-      : (user?.firstName ?? "") + (user?.lastName ?? "");
 
   try {
     const mediaUrl: { secure_url: string; public_id: string }[] = [];
 
-    // Upload file to cloudinary
+    // Upload image to cloudinary
     await Promise.all(
-      media.map(async (fileData: any) => {
+      imageFiles.map(async (fileData: any) => {
         const buffer = Buffer.from(fileData.data);
 
         return new Promise((resolve, reject) => {
@@ -50,11 +46,11 @@ export async function POST(req: NextRequest) {
       })
     );
 
+    // Upload video to cloudinary
+    
+
     // Insert Data to xata database
     const postData = {
-      user_id,
-      author_username,
-      author_fullname,
       content,
       media: mediaUrl,
       author: author_id,
@@ -68,18 +64,12 @@ export async function POST(req: NextRequest) {
       }),
       {
         status: 200,
-        headers: {
-          "Content-Type": "application/json",
-        },
       }
     );
   } catch (error) {
     console.error("Error while creating post:", error);
     return new Response(JSON.stringify({ message: "Could not create post" }), {
       status: 500,
-      headers: {
-        "Content-Type": "application/json",
-      },
     });
   }
 }
