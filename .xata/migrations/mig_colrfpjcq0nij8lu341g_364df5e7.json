@@ -1,0 +1,13 @@
+{
+  "id": "mig_colrfpjcq0nij8lu341g",
+  "parentID": "mig_colrfjrcq0nij8lu340g",
+  "checksum": "1:364df5e75fa79270d0ca908c945ab508fa7513e469ff87a4f824aa202651d70e",
+  "operations": [
+    {
+      "removeColumn": {
+        "column": "user_id",
+        "table": "Post"
+      }
+    }
+  ]
+}
