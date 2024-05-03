@@ -8,9 +8,11 @@ import { toast } from "react-toastify";
 import { useDropzone } from "react-dropzone";
 import FormModal from "@/components/modal/formModal";
 import { useQueryClient } from "@tanstack/react-query";
+import ReactPlayer from "react-player";
 
 export default function CreatePost() {
   const [previews, setPreviews] = useState<string[]>([]);
+  const [previewVideo, setPreviewsVideo] = useState<string[]>([]);
   const [isOpenModal, setIsOpenModal] = useState(false);
 
   const queryClient = useQueryClient();
@@ -18,36 +20,33 @@ export default function CreatePost() {
   const formik = useFormik<CreatePost>({
     initialValues: {
       content: "",
-      media: [],
+      media: {
+        image: [],
+        video: [],
+      },
     },
 
     validationSchema: Yup.object({
       content: Yup.string().required(),
-      media: Yup.array().required(),
+      media: Yup.object(),
     }),
 
     onSubmit: async (values, { resetForm }) => {
       try {
         const imageFiles = await Promise.all(
-          values.media.map(async (file: File) => {
-            if (file.type.startsWith("image/")) {
-              const arrayBuffer = await file.arrayBuffer();
-              const imageBuffer = Buffer.from(arrayBuffer);
-              return imageBuffer;
-            }
-            return null;
+          values.media.image.map(async (file: File) => {
+            const arrayBuffer = await file.arrayBuffer();
+            const imageBuffer = Buffer.from(arrayBuffer);
+            return imageBuffer;
           })
-        );
-
-        const filteredImageFiles = imageFiles.filter((file) => file !== null);
-
-        const videoFiles = values.media.filter((file) =>
-          file.type.startsWith("video/")
         );
 
         const postData = {
           ...values,
-          media: { imageFiles: filteredImageFiles, videoFiles },
+          media: {
+            image: imageFiles,
+            video: values.media.video,
+          },
         };
 
         const createPost = fetch("/api/create-post", {
@@ -77,7 +76,7 @@ export default function CreatePost() {
         queryClient.invalidateQueries({
           queryKey: ["allPosts"],
         });
-        
+
         queryClient.invalidateQueries({
           queryKey: ["allUserPosts"],
         });
@@ -93,13 +92,34 @@ export default function CreatePost() {
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      // Update previews state with URLs of dropped files
-      const filePreviews = acceptedFiles.map((file) =>
-        URL.createObjectURL(file)
+      // Filter the accepted files into images and videos
+      const imageFiles = acceptedFiles.filter((file) =>
+        file.type.startsWith("image/")
       );
 
-      setPreviews((prevPreviews) => [...prevPreviews, ...filePreviews]);
-      formik.setFieldValue("media", [...formik.values.media, ...acceptedFiles]);
+      const videoFiles = acceptedFiles.filter((file) =>
+        file.type.startsWith("video/")
+      );
+
+      // Update image previews state with URLs of dropped image files
+      const imagePreviews = imageFiles.map((file) => URL.createObjectURL(file));
+
+      // Update video previews state with URLs of dropped video files
+      const videoPreviews = videoFiles.map((file) => URL.createObjectURL(file));
+
+      // Update the preview states and formik values
+      setPreviews((prevPreviews) => [...prevPreviews, ...imagePreviews]);
+      setPreviewsVideo((prevPreviews) => [...prevPreviews, ...videoPreviews]);
+
+      formik.setFieldValue("media.image", [
+        ...formik.values.media.image,
+        ...imageFiles,
+      ]);
+
+      formik.setFieldValue("media.video", [
+        ...formik.values.media.video,
+        ...videoFiles,
+      ]);
     },
     [formik]
   );
@@ -109,10 +129,31 @@ export default function CreatePost() {
     index: number
   ) => {
     event.stopPropagation();
+
     setPreviews((prevPreviews) => prevPreviews.filter((_, i) => i !== index));
 
-    const updatedMedia = formik.values.media.filter((_, i) => i !== index);
-    formik.setFieldValue("media", updatedMedia);
+    const updatedMedia = formik.values.media.image.filter(
+      (_, i) => i !== index
+    );
+
+    formik.setFieldValue("media.image", updatedMedia);
+  };
+
+  const removePreviewVideo = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    index: number
+  ) => {
+    event.stopPropagation();
+
+    setPreviewsVideo((prevPreviews) =>
+      prevPreviews.filter((_, i) => i !== index)
+    );
+
+    const updatedMedia = formik.values.media.video.filter(
+      (_, i) => i !== index
+    );
+
+    formik.setFieldValue("media.video", updatedMedia);
   };
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -203,8 +244,9 @@ export default function CreatePost() {
                     >
                       <div {...getRootProps()} className="dropzone">
                         <input {...getInputProps()} name="media" />
-                        {previews.length !== 0 ? (
-                          <div className="flex flex-row flex-wrap items-center justify-center gap-4">
+                        {previews.length !== 0 || previewVideo.length !== 0 ? (
+                          <div className="flex flex-row flex-wrap items-center justify-center gap-5">
+                            {/* Image Preview */}
                             {previews.map((preview, index) => (
                               <div className="relative" key={index}>
                                 <button
@@ -233,6 +275,47 @@ export default function CreatePost() {
                                   src={preview}
                                   alt="Preview"
                                   className="preview-image w-full max-w-[200px] h-auto object-cover rounded"
+                                />
+                              </div>
+                            ))}
+
+                            {/* Video Preview */}
+                            {previewVideo.map((preview, index) => (
+                              <div className="relative" key={index}>
+                                <button
+                                  type="button"
+                                  onClick={(event) =>
+                                    removePreviewVideo(event, index)
+                                  }
+                                  className="p-2 rounded-full absolute -top-4 -right-4 bg-slate-800 z-10"
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="3"
+                                    className="w-4 h-4 stroke-white/80"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M6 18 18 6M6 6l12 12"
+                                    />
+                                  </svg>
+                                </button>
+
+                                <ReactPlayer
+                                  controls
+                                  url={preview}
+                                  height={"auto"}
+                                  style={{
+                                    width: "100%",
+                                    maxWidth: "200px",
+                                    height: "auto",
+                                    aspectRatio: "16/9",
+                                    borderRadius: "4px",
+                                    overflow: "hidden",
+                                  }}
                                 />
                               </div>
                             ))}
