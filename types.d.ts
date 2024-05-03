@@ -14,10 +14,13 @@ interface PostData {
 
 interface CreatePost {
   content: string;
-  media: any[];
+  media: Media;
   userId?: string;
-  authorFullname?: string;
-  authorUsername?: string;
+}
+
+interface Media {
+  image: file[];
+  video: file[];
 }
 
 interface UpdatePost {
