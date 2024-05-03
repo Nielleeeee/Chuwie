@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const { content, media } = body;
 
-  const { imageFiles, videoFiles } = media;
+  const { image, video } = media;
 
   const xataClient = getXataClient();
 
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
 
     // Upload image to cloudinary
     await Promise.all(
-      imageFiles.map(async (fileData: any) => {
+      image.map(async (fileData: any) => {
         const buffer = Buffer.from(fileData.data);
 
         return new Promise((resolve, reject) => {
