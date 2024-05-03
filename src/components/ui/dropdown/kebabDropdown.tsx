@@ -32,7 +32,7 @@ export default function KebabDropdown({
             >
               <Popover.Panel className="absolute top-12 right-0 z-10">
                 <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black/5">
-                  <div className="relative flex flex-col gap-2 bg-white p-3">
+                  <div className="relative flex sm:flex-col gap-2 bg-white p-3">
                     {children}
                   </div>
                 </div>
