@@ -27,9 +27,9 @@ export async function POST(req: NextRequest) {
     }
 
     // Upload file to cloudinary
-    if (media.length !== 0) {
+    if (media.image.length !== 0) {
       await Promise.all(
-        media.map(async (fileData: any) => {
+        media.image.map(async (fileData: any) => {
           const buffer = Buffer.from(fileData.data);
 
           return new Promise((resolve, reject) => {
