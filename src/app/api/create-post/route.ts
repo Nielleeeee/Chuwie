@@ -21,7 +21,11 @@ export async function POST(req: NextRequest) {
   const author_id = (user?.publicMetadata.user_id as string) || "";
 
   try {
-    const mediaUrl: { secure_url: string; public_id: string }[] = [];
+    const mediaUrl: {
+      secure_url: string;
+      public_id: string;
+      format?: string;
+    }[] = [];
 
     // Upload image to cloudinary
     await Promise.all(
@@ -46,8 +50,28 @@ export async function POST(req: NextRequest) {
       })
     );
 
-    // Upload video to cloudinary
-    
+    await Promise.all(
+      video.map(async (fileData: any) => {
+        const buffer = Buffer.from(fileData.data);
+
+        return new Promise((resolve, reject) => {
+          cloudinary.uploader
+            .upload_stream({ tags: ["chuwie"] }, function (error, result) {
+              if (error) {
+                reject(error);
+                return;
+              }
+              mediaUrl.push({
+                secure_url: result?.secure_url as string,
+                public_id: result?.public_id as string,
+                format: result?.format as string,
+              });
+              resolve(result);
+            })
+            .end(buffer);
+        });
+      })
+    );
 
     // Insert Data to xata database
     const postData = {
@@ -56,7 +80,9 @@ export async function POST(req: NextRequest) {
       author: author_id,
     };
 
-    await xataClient.db.Post.create(postData);
+    const createPostResult = await xataClient.db.Post.create(postData);
+
+    console.log(createPostResult);
 
     return new Response(
       JSON.stringify({
