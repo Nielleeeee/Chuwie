@@ -41,13 +41,23 @@ export default function CreatePost() {
           })
         );
 
+        const videoFiles = await Promise.all(
+          values.media.video.map(async (file: File) => {
+            const arrayBuffer = await file.arrayBuffer();
+            const videoBuffer = Buffer.from(arrayBuffer);
+            return videoBuffer;
+          })
+        );
+
         const postData = {
           ...values,
           media: {
             image: imageFiles,
-            video: values.media.video,
+            video: videoFiles,
           },
         };
+
+        console.log(postData);
 
         const createPost = fetch("/api/create-post", {
           method: "POST",
@@ -68,6 +78,7 @@ export default function CreatePost() {
         if (!response.ok) {
           resetForm();
           setPreviews([]);
+          setPreviewsVideo([]);
           setIsOpenModal(false);
 
           throw new Error("Failed to create post");
@@ -83,6 +94,7 @@ export default function CreatePost() {
 
         resetForm();
         setPreviews([]);
+        setPreviewsVideo([]);
         setIsOpenModal(false);
       } catch (error) {
         console.error("Error while creating post:", error);
