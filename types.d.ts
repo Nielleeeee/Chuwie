@@ -23,6 +23,12 @@ interface Media {
   video: file[];
 }
 
+interface CombinedMedia {
+  data: Buffer;
+  mimetype: string;
+  filename: string;
+}
+
 interface UpdatePost {
   content: string;
   media: any[];
