@@ -37,7 +37,12 @@ export default function CreatePost() {
           values.media.image.map(async (file: File) => {
             const arrayBuffer = await file.arrayBuffer();
             const imageBuffer = Buffer.from(arrayBuffer);
-            return imageBuffer;
+            const filename = file.name.replace(/\.[^/.]+$/, "");
+            return {
+              data: imageBuffer,
+              mimetype: file.type,
+              filename,
+            };
           })
         );
 
@@ -45,25 +50,22 @@ export default function CreatePost() {
           values.media.video.map(async (file: File) => {
             const arrayBuffer = await file.arrayBuffer();
             const videoBuffer = Buffer.from(arrayBuffer);
-            return videoBuffer;
+            const filename = file.name.replace(/\.[^/.]+$/, "");
+            return {
+              data: videoBuffer,
+              mimetype: file.type,
+              filename,
+            };
           })
         );
 
         const postData = {
           ...values,
-          media: {
-            image: imageFiles,
-            video: videoFiles,
-          },
+          media: [...imageFiles, ...videoFiles],
         };
-
-        console.log(postData);
 
         const createPost = fetch("/api/create-post", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
           body: JSON.stringify(postData),
         });
 
