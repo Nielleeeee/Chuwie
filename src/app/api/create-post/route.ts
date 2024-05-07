@@ -2,7 +2,7 @@ import type { NextRequest } from "next/server";
 import { getXataClient } from "@/xata";
 import { currentUser } from "@clerk/nextjs";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import crypto from 'crypto'
+import crypto from "crypto";
 
 const bucketName = process.env.AWS_BUCKET_NAME;
 const region = process.env.AWS_REGION;
@@ -19,7 +19,8 @@ const s3Client = new S3Client([
   },
 ]);
 
-const generateFileName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex')
+const generateFileName = (bytes = 32) =>
+  crypto.randomBytes(bytes).toString("hex");
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -32,17 +33,16 @@ export async function POST(req: NextRequest) {
   const author_id = (user?.publicMetadata.user_id as string) || "";
 
   try {
-    const mediaName: {
-      secure_url: string;
-      public_id: string;
-      format?: string;
+    const mediaObject: {
+      fileName: string;
+      type: string;
     }[] = [];
 
     const uploadMediaS3 = await Promise.all(
       media.map(async (media: CombinedMedia) => {
         const mediaBuffer = Buffer.from(media.data);
 
-        const fileName = generateFileName()
+        const fileName = generateFileName();
 
         const params = {
           Bucket: bucketName,
@@ -54,7 +54,12 @@ export async function POST(req: NextRequest) {
         try {
           await s3Client.send(new PutObjectCommand(params));
 
-          return { success: true, media: fileName };
+          mediaObject.push({
+            fileName,
+            type: media.mimetype,
+          });
+
+          return { success: true, media: fileName, mediaType: media.mimetype };
         } catch (error) {
           console.error(`Error uploading ${media.filename} to S3:`, error);
           return { success: false, media: fileName };
@@ -62,18 +67,16 @@ export async function POST(req: NextRequest) {
       })
     );
 
-    console.log(uploadMediaS3);
-
     // Insert Data to xata database
     const postData = {
       content,
-      media: uploadMediaS3.map((item) => item.media),
+      media: mediaObject,
       author: author_id,
     };
 
     const createPostResult = await xataClient.db.Post.create(postData);
 
-    console.log(createPostResult);
+    // console.log(createPostResult);
 
     return new Response(
       JSON.stringify({
