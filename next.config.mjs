@@ -18,6 +18,11 @@ const nextConfig = {
         hostname: "img.clerk.com",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "chuwie-bucket-happ.s3.ap-southeast-2.amazonaws.com",
+        port: "",
+      },
     ],
   },
 };
