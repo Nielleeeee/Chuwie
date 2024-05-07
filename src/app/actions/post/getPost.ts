@@ -1,7 +1,7 @@
 "use server";
 
 import { getXataClient } from "@/xata";
-import { clerkClient } from "@clerk/nextjs";
+import { signedUrl } from "@/app/actions/aws/signedUrl";
 
 const xataClient = getXataClient();
 
@@ -63,8 +63,20 @@ export const getAllPost = async ({ pageParam = 1 }, pageSize = 3) => {
       post.records.map(async (record) => {
         const author = { ...record.author };
         const xata = { ...record.xata };
-        
-        return { ...record, xata, author };
+    
+        // Map over each media and get the signed URL for each
+        const signedUrlMedia = await Promise.all(
+          record.media.map(async (media: any) => {
+            const mediaUrl = await signedUrl(media.fileName);
+            return {
+              type: media.type,
+              fileName: media.fileName,
+              mediaUrl: mediaUrl
+            };
+          })
+        );
+    
+        return { ...record, xata, author, media: signedUrlMedia };
       })
     );
 
@@ -95,8 +107,20 @@ export const getAllUserPost = async (
       post.records.map(async (record) => {
         const author = { ...record.author };
         const xata = { ...record.xata };
-
-        return { ...record, xata, author };
+    
+        // Map over each media and get the signed URL for each
+        const signedUrlMedia = await Promise.all(
+          record.media.map(async (media: any) => {
+            const mediaUrl = await signedUrl(media.fileName);
+            return {
+              type: media.type,
+              fileName: media.fileName,
+              mediaUrl: mediaUrl
+            };
+          })
+        );
+    
+        return { ...record, xata, author, media: signedUrlMedia };
       })
     );
 
