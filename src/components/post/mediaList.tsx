@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Lightbox from "yet-another-react-lightbox";
+import ReactPlayer from "react-player";
 
 import "yet-another-react-lightbox/styles.css";
 import "swiper/css";
@@ -29,8 +30,8 @@ export default function MediaList({ postData }: any) {
     }
   };
 
-  const slides = postData.media.map((image: { secure_url: string }) => {
-    return { src: image.secure_url };
+  const slides = postData.media.map((image: { mediaUrl: string }) => {
+    return { src: image.mediaUrl };
   });
 
   return (
@@ -44,20 +45,36 @@ export default function MediaList({ postData }: any) {
         onSwiper={setSwiper}
       >
         {postData.media.length !== 0 &&
-          postData.media.map((item: { secure_url: string }, index: number) => (
-            <SwiperSlide key={index} onClick={() => handleImageOpen(index)}>
-              <div className="w-full flex justify-center items-center overflow-hidden">
-                <Image
-                  src={item.secure_url}
-                  alt={postData.author_username ?? ""}
-                  width={1000}
-                  height={1000}
-                  className="w-full max-h-[500px] object-cover rounded cursor-pointer"
-                  draggable={false}
-                />
-              </div>
-            </SwiperSlide>
-          ))}
+          postData.media.map(
+            (item: { mediaUrl: string; type: string }, index: number) => (
+              <SwiperSlide key={index} onClick={() => handleImageOpen(index)}>
+                <div className="w-full flex justify-center items-center overflow-hidden">
+                  {item.type.startsWith("image/") ? (
+                    <Image
+                      src={item.mediaUrl}
+                      alt={postData.author_username ?? ""}
+                      width={1000}
+                      height={1000}
+                      className="w-full max-h-[500px] object-cover rounded cursor-pointer"
+                      draggable={false}
+                    />
+                  ) : (
+                    <ReactPlayer
+                      controls
+                      url={item.mediaUrl}
+                      height={"auto"}
+                      style={{
+                        width: "100%",
+                        height: "auto",
+                        borderRadius: "4px",
+                        overflow: "hidden",
+                      }}
+                    />
+                  )}
+                </div>
+              </SwiperSlide>
+            )
+          )}
       </Swiper>
 
       <Lightbox
