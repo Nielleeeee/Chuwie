@@ -15,9 +15,9 @@ export const useGetInitialPost = () => {
 export const useGetAllPost = () => {
   return useInfiniteQuery({
     queryKey: ["allPosts"],
-    queryFn: ({ pageParam = 1 }) => getAllPost({ pageParam }) as any,
+    queryFn: ({ pageParam }) => getAllPost(pageParam) as any,
     initialPageParam: 1,
-    getNextPageParam: (allPages) => {
+    getNextPageParam: (lastPage, allPages) => {
       const hasNextPage = allPages[allPages.length - 1]?.hasNextPage;
       return hasNextPage ? allPages.length + 1 : undefined;
     },
@@ -30,7 +30,7 @@ export const useGetAllUserPost = (username: string) => {
     queryFn: ({ pageParam = 1 }, pageSize = 3) =>
       getAllUserPost({ pageParam }, pageSize, username) as any,
     initialPageParam: 1,
-    getNextPageParam: (allPages) => {
+    getNextPageParam: (lastPage, allPages) => {
       const hasNextPage = allPages[allPages.length - 1]?.hasNextPage;
       return hasNextPage ? allPages.length + 1 : undefined;
     },
