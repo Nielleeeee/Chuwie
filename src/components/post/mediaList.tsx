@@ -52,7 +52,7 @@ export default function MediaList({ postData }: any) {
                   {item.type.startsWith("image/") ? (
                     <Image
                       src={item.mediaUrl}
-                      alt={postData.author_username ?? ""}
+                      alt={`${postData.author.username}-image`}
                       width={1000}
                       height={1000}
                       className="w-full max-h-[500px] object-cover rounded cursor-pointer"
