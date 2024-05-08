@@ -31,18 +31,26 @@ export default function Post() {
     <p>Error: {error.message}</p>
   ) : (
     <section className="flex flex-col">
-      <PostList PostData={allPosts} />
+      {allPosts.length !== 0 ? (
+        <>
+          <PostList PostData={allPosts} />
 
-      {hasNextPage || isFetchingNextPage ? (
-        <div
-          ref={ref}
-          className="w-full py-10 flex justify-center items-center"
-        >
-          <PostLoader />
-        </div>
+          {hasNextPage || isFetchingNextPage ? (
+            <div
+              ref={ref}
+              className="w-full py-10 flex justify-center items-center"
+            >
+              <PostLoader />
+            </div>
+          ) : (
+            <div className="w-full text-white text-xl font-medium py-10 flex justify-center items-center">
+              No more post available 😔
+            </div>
+          )}
+        </>
       ) : (
         <div className="w-full text-white text-xl font-medium py-10 flex justify-center items-center">
-          No more post available 😔
+          No post yet... 😔
         </div>
       )}
     </section>
