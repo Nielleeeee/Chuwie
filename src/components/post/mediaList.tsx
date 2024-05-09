@@ -46,12 +46,12 @@ export default function MediaList({ postData }: any) {
       >
         {postData.media.length !== 0 &&
           postData.media.map(
-            (item: { mediaUrl: string; type: string }, index: number) => (
+            (item: { url: string; type: string }, index: number) => (
               <SwiperSlide key={index} onClick={() => handleImageOpen(index)}>
                 <div className="w-full flex justify-center items-center overflow-hidden">
                   {item.type.startsWith("image/") ? (
                     <Image
-                      src={item.mediaUrl}
+                      src={item.url}
                       alt={`${postData.author.username}-image`}
                       width={1000}
                       height={1000}
@@ -61,7 +61,7 @@ export default function MediaList({ postData }: any) {
                   ) : (
                     <ReactPlayer
                       controls
-                      url={item.mediaUrl}
+                      url={item.url}
                       height={"auto"}
                       style={{
                         width: "100%",
