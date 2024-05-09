@@ -64,19 +64,7 @@ export const getAllPost = async (pageParam: number, pageSize = 3) => {
         const author = { ...record.author };
         const xata = { ...record.xata };
 
-        // Map over each media and get the signed URL for each
-        const signedUrlMedia = await Promise.all(
-          record.media.map(async (media: any) => {
-            const mediaUrl = await signedUrl(media.fileName);
-            return {
-              type: media.type,
-              fileName: media.fileName,
-              mediaUrl: mediaUrl,
-            };
-          })
-        );
-
-        return { ...record, xata, author, media: signedUrlMedia };
+        return { ...record, xata, author };
       })
     );
 
@@ -108,19 +96,7 @@ export const getAllUserPost = async (
         const author = { ...record.author };
         const xata = { ...record.xata };
 
-        // Map over each media and get the signed URL for each
-        const signedUrlMedia = await Promise.all(
-          record.media.map(async (media: any) => {
-            const mediaUrl = await signedUrl(media.fileName);
-            return {
-              type: media.type,
-              fileName: media.fileName,
-              mediaUrl: mediaUrl,
-            };
-          })
-        );
-
-        return { ...record, xata, author, media: signedUrlMedia };
+        return { ...record, xata, author};
       })
     );
 
