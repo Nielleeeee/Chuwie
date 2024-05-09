@@ -3,6 +3,7 @@ import { getXataClient } from "@/xata";
 import { currentUser } from "@clerk/nextjs";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import crypto from "crypto";
+import { signedUrl } from "@/app/actions/aws/signedUrl";
 
 const bucketName = process.env.AWS_BUCKET_NAME;
 const region = process.env.AWS_REGION;
@@ -36,6 +37,7 @@ export async function POST(req: NextRequest) {
     const mediaObject: {
       fileName: string;
       type: string;
+      url: string;
     }[] = [];
 
     const uploadMediaS3 = await Promise.all(
@@ -54,9 +56,12 @@ export async function POST(req: NextRequest) {
         try {
           await s3Client.send(new PutObjectCommand(params));
 
+          const mediaUrl = await signedUrl(fileName);
+
           mediaObject.push({
             fileName,
             type: media.mimetype,
+            url: mediaUrl,
           });
 
           return { success: true, media: fileName, mediaType: media.mimetype };
