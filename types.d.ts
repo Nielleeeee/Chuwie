@@ -31,7 +31,7 @@ interface CombinedMedia {
 
 interface UpdatePost {
   content: string;
-  media: any[];
+  media: Media;
   toDelete?: string[];
 }
 
@@ -49,8 +49,9 @@ interface DeletePostParams {
 }
 
 interface MediaItem {
-  secure_url?: string;
-  public_id?: string;
+  url: string;
+  type: string;
+  fileName: string;
 }
 
 interface UpdatePostRoute {
