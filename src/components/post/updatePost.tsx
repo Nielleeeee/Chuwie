@@ -8,9 +8,11 @@ import { toast } from "react-toastify";
 import { useDropzone } from "react-dropzone";
 import FormModal from "@/components/modal/formModal";
 import { useQueryClient } from "@tanstack/react-query";
+import ReactPlayer from "react-player";
 
 export default function UpdatePost({ currentData }: any) {
-  const [previews, setPreviews] = useState<string[]>([]);
+  const [previews, setPreviews] = useState<any[]>([]);
+  const [previewVideo, setPreviewsVideo] = useState<any[]>([]);
   const [isOpenModal, setIsOpenModal] = useState(false);
 
   const queryClient = useQueryClient();
@@ -18,30 +20,51 @@ export default function UpdatePost({ currentData }: any) {
   const formik = useFormik<UpdatePost>({
     initialValues: {
       content: currentData.content,
-      media: [],
+      media: {
+        image: [],
+        video: [],
+      },
       toDelete: [],
     },
 
     validationSchema: Yup.object({
       content: Yup.string().required(),
-      media: Yup.array().required(),
+      media: Yup.object(),
     }),
 
     enableReinitialize: true,
 
     onSubmit: async (values, { resetForm }) => {
       try {
-        const filesData = await Promise.all(
-          values.media.map(async (file: File) => {
+        const imageFiles = await Promise.all(
+          values.media.image.map(async (file: File) => {
             const arrayBuffer = await file.arrayBuffer();
-            const buffer = Buffer.from(arrayBuffer);
-            return buffer;
+            const imageBuffer = Buffer.from(arrayBuffer);
+            const filename = file.name.replace(/\.[^/.]+$/, "");
+            return {
+              data: imageBuffer,
+              mimetype: file.type,
+              filename,
+            };
+          })
+        );
+
+        const videoFiles = await Promise.all(
+          values.media.video.map(async (file: File) => {
+            const arrayBuffer = await file.arrayBuffer();
+            const videoBuffer = Buffer.from(arrayBuffer);
+            const filename = file.name.replace(/\.[^/.]+$/, "");
+            return {
+              data: videoBuffer,
+              mimetype: file.type,
+              filename,
+            };
           })
         );
 
         const postData = {
           ...values,
-          media: filesData,
+          media: [...imageFiles, ...videoFiles],
           post_id: currentData.id,
           currentMedia: currentData.media,
         };
@@ -88,19 +111,54 @@ export default function UpdatePost({ currentData }: any) {
   });
 
   useEffect(() => {
-    setPreviews(
-      currentData.media.map((mediaItem: MediaItem) => mediaItem.secure_url)
-    );
-  }, [currentData]);
+    const imagePreviews = currentData.media
+      .filter((mediaItem: MediaItem) => mediaItem.type.startsWith("image/"))
+      .map((mediaItem: MediaItem) => ({
+        url: mediaItem.url,
+        fileName: mediaItem.fileName,
+      }));
+
+    const videoPreviews = currentData.media
+      .filter((mediaItem: MediaItem) => mediaItem.type.startsWith("video/"))
+      .map((mediaItem: MediaItem) => ({
+        url: mediaItem.url,
+        fileName: mediaItem.fileName,
+      }));
+
+    setPreviews(imagePreviews);
+    setPreviewsVideo(videoPreviews);
+  }, [currentData.media]);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      // Update previews state with URLs of dropped files
-      const filePreviews = acceptedFiles.map((file) =>
-        URL.createObjectURL(file)
+      // Filter the accepted files into images and videos
+      const imageFiles = acceptedFiles.filter((file) =>
+        file.type.startsWith("image/")
       );
-      setPreviews((prevPreviews) => [...prevPreviews, ...filePreviews]);
-      formik.setFieldValue("media", [...formik.values.media, ...acceptedFiles]);
+
+      const videoFiles = acceptedFiles.filter((file) =>
+        file.type.startsWith("video/")
+      );
+
+      // Update image previews state with URLs of dropped image files
+      const imagePreviews = imageFiles.map((file) => URL.createObjectURL(file));
+
+      // Update video previews state with URLs of dropped video files
+      const videoPreviews = videoFiles.map((file) => URL.createObjectURL(file));
+
+      // Update the preview states and formik values
+      setPreviews((prevPreviews) => [...prevPreviews, ...imagePreviews]);
+      setPreviewsVideo((prevPreviews) => [...prevPreviews, ...videoPreviews]);
+
+      formik.setFieldValue("media.image", [
+        ...formik.values.media.image,
+        ...imageFiles,
+      ]);
+
+      formik.setFieldValue("media.video", [
+        ...formik.values.media.video,
+        ...videoFiles,
+      ]);
     },
     [formik]
   );
@@ -108,22 +166,50 @@ export default function UpdatePost({ currentData }: any) {
   const removePreview = (
     event: React.MouseEvent<HTMLButtonElement>,
     index: number,
-    publicID?: string
+    fileName?: string
   ) => {
     event.stopPropagation();
     setPreviews((prevPreviews) => prevPreviews.filter((_, i) => i !== index));
 
-    const updatedMedia = formik.values.media.filter((_, i) => i !== index);
-    const toDeleteMedia = [...(formik.values.toDelete as []), publicID];
+    const updatedMedia = formik.values.media.image.filter(
+      (_, i) => i !== index
+    );
+    const toDeleteMedia = [...(formik.values.toDelete as []), fileName];
 
     formik.setFieldValue("toDelete", toDeleteMedia);
-    formik.setFieldValue("media", updatedMedia);
+    formik.setFieldValue("media.image", updatedMedia);
+  };
+
+  const removePreviewVideo = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    index: number,
+    fileName?: string
+  ) => {
+    event.stopPropagation();
+
+    setPreviewsVideo((prevPreviews) =>
+      prevPreviews.filter((_, i) => i !== index)
+    );
+
+    const updatedMedia = formik.values.media.video.filter(
+      (_, i) => i !== index
+    );
+    const toDeleteMedia = [...(formik.values.toDelete as []), fileName];
+
+    formik.setFieldValue("toDelete", toDeleteMedia);
+    formik.setFieldValue("media.video", updatedMedia);
   };
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: { "image/*": [] },
-    maxSize: 1024 * 3000,
+    maxFiles: 10,
+    accept: {
+      "image/*": [],
+      "video/mp4": [".mp4"],
+      "video/mpeg": [".mpeg"],
+      "video/webm": [".webm"],
+    },
+    maxSize: 1024 * 100000,
     multiple: true,
   });
 
@@ -157,12 +243,28 @@ export default function UpdatePost({ currentData }: any) {
         onRequestClose={() => {
           // Reset form values to initial values when modal is closed
           formik.resetForm();
+
           // Reset previews to initial previews
-          setPreviews(
-            currentData.media.map(
-              (mediaItem: { secure_url: string }) => mediaItem.secure_url
+          const imagePreviews = currentData.media
+            .filter((mediaItem: MediaItem) =>
+              mediaItem.type.startsWith("image/")
             )
-          );
+            .map((mediaItem: MediaItem) => ({
+              url: mediaItem.url,
+              fileName: mediaItem.fileName,
+            }));
+
+          const videoPreviews = currentData.media
+            .filter((mediaItem: MediaItem) =>
+              mediaItem.type.startsWith("video/")
+            )
+            .map((mediaItem: MediaItem) => ({
+              url: mediaItem.url,
+              fileName: mediaItem.fileName,
+            }));
+
+          setPreviews(imagePreviews);
+          setPreviewsVideo(videoPreviews);
         }}
       >
         <form onSubmit={formik.handleSubmit}>
@@ -212,7 +314,7 @@ export default function UpdatePost({ currentData }: any) {
                     >
                       <div {...getRootProps()} className="dropzone">
                         <input {...getInputProps()} name="media" />
-                        {previews.length !== 0 ? (
+                        {previews.length !== 0 || previewVideo.length !== 0 ? (
                           <div className="flex flex-row flex-wrap items-center justify-center gap-4">
                             {previews.map((preview, index) => (
                               <div className="relative" key={index}>
@@ -222,7 +324,7 @@ export default function UpdatePost({ currentData }: any) {
                                     removePreview(
                                       event,
                                       index,
-                                      currentData.media[index]?.public_id
+                                      preview.fileName
                                     )
                                   }
                                   className="p-2 rounded-full absolute -top-4 -right-4 bg-slate-800 z-10"
@@ -246,6 +348,51 @@ export default function UpdatePost({ currentData }: any) {
                                   src={preview}
                                   alt="Preview"
                                   className="preview-image w-full max-w-[200px] h-auto object-cover rounded"
+                                />
+                              </div>
+                            ))}
+
+                            {/* Video Preview */}
+                            {previewVideo.map((preview, index) => (
+                              <div className="relative" key={index}>
+                                <button
+                                  type="button"
+                                  onClick={(event) =>
+                                    removePreviewVideo(
+                                      event,
+                                      index,
+                                      preview.fileName
+                                    )
+                                  }
+                                  className="p-2 rounded-full absolute -top-4 -right-4 bg-slate-800 z-10"
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="3"
+                                    className="w-4 h-4 stroke-white/80"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M6 18 18 6M6 6l12 12"
+                                    />
+                                  </svg>
+                                </button>
+
+                                <ReactPlayer
+                                  controls
+                                  url={preview}
+                                  height={"auto"}
+                                  style={{
+                                    width: "100%",
+                                    maxWidth: "200px",
+                                    height: "auto",
+                                    aspectRatio: "16/9",
+                                    borderRadius: "4px",
+                                    overflow: "hidden",
+                                  }}
                                 />
                               </div>
                             ))}
