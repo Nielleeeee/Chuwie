@@ -141,10 +141,16 @@ export default function UpdatePost({ currentData }: any) {
       );
 
       // Update image previews state with URLs of dropped image files
-      const imagePreviews = imageFiles.map((file) => URL.createObjectURL(file));
+      const imagePreviews = imageFiles.map((file) => ({
+        url: URL.createObjectURL(file),
+        fileName: null,
+      }));
 
       // Update video previews state with URLs of dropped video files
-      const videoPreviews = videoFiles.map((file) => URL.createObjectURL(file));
+      const videoPreviews = videoFiles.map((file) => ({
+        url: URL.createObjectURL(file),
+        fileName: null,
+      }));
 
       // Update the preview states and formik values
       setPreviews((prevPreviews) => [...prevPreviews, ...imagePreviews]);
@@ -345,7 +351,7 @@ export default function UpdatePost({ currentData }: any) {
                                 </button>
 
                                 <img
-                                  src={preview}
+                                  src={preview.url}
                                   alt="Preview"
                                   className="preview-image w-full max-w-[200px] h-auto object-cover rounded"
                                 />
@@ -383,7 +389,7 @@ export default function UpdatePost({ currentData }: any) {
 
                                 <ReactPlayer
                                   controls
-                                  url={preview}
+                                  url={preview.url}
                                   height={"auto"}
                                   style={{
                                     width: "100%",
