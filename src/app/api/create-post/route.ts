@@ -38,6 +38,7 @@ export async function POST(req: NextRequest) {
       fileName: string;
       type: string;
       url: string;
+      timestamp: Date;
     }[] = [];
 
     const uploadMediaS3 = await Promise.all(
@@ -62,6 +63,7 @@ export async function POST(req: NextRequest) {
             fileName,
             type: media.mimetype,
             url: mediaUrl,
+            timestamp: new Date(),
           });
 
           return { success: true, media: fileName, mediaType: media.mimetype };
