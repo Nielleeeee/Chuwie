@@ -24,6 +24,9 @@ export const signedUrl = async (key: string) => {
     new GetObjectCommand({
       Bucket: bucketName,
       Key: key,
-    })
+    }),
+    {
+      expiresIn: 604800,
+    }
   );
 };
