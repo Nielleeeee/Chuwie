@@ -30,8 +30,8 @@ export default function MediaList({ postData }: any) {
     }
   };
 
-  const slides = postData.media.map((image: { mediaUrl: string }) => {
-    return { src: image.mediaUrl };
+  const slides = postData.media.map((image: { url: string }) => {
+    return { src: image.url };
   });
 
   return (
