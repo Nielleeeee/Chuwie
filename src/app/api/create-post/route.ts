@@ -34,12 +34,7 @@ export async function POST(req: NextRequest) {
   const author_id = (user?.publicMetadata.user_id as string) || "";
 
   try {
-    const mediaObject: {
-      fileName: string;
-      type: string;
-      url: string;
-      timestamp: Date;
-    }[] = [];
+    const mediaObject: MediaItem[] = [];
 
     const uploadMediaS3 = await Promise.all(
       media.map(async (media: CombinedMedia) => {
