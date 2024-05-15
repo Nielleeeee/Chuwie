@@ -35,11 +35,7 @@ export async function POST(req: NextRequest) {
   const xataClient = getXataClient();
 
   try {
-    const mediaObject: {
-      fileName: string;
-      type: string;
-      url: string;
-    }[] = [];
+    const mediaObject: MediaItem[] = [];
 
     // // Delete updated image in cloudinary
     if (toDelete?.length !== 0) {
@@ -77,6 +73,7 @@ export async function POST(req: NextRequest) {
               fileName,
               type: media.mimetype,
               url: mediaUrl,
+              timestamp: new Date(),
             });
 
             return {
