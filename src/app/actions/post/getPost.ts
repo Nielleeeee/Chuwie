@@ -2,6 +2,7 @@
 
 import { getXataClient } from "@/xata";
 import { signedUrl } from "@/app/actions/aws/signedUrl";
+import { updateSignedUrl } from "@/app/actions/aws/updateSignedUrl";
 
 const xataClient = getXataClient();
 
@@ -64,7 +65,9 @@ export const getAllPost = async (pageParam: number, pageSize = 3) => {
         const author = { ...record.author };
         const xata = { ...record.xata };
 
-        return { ...record, xata, author };
+        const updatedMedia = await updateSignedUrl(record.media);
+
+        return { ...record, xata, author, media: updatedMedia };
       })
     );
 
@@ -96,7 +99,9 @@ export const getAllUserPost = async (
         const author = { ...record.author };
         const xata = { ...record.xata };
 
-        return { ...record, xata, author};
+        const updatedMedia = await updateSignedUrl(record.media);
+
+        return { ...record, xata, author, media: updatedMedia };
       })
     );
 
