@@ -52,6 +52,7 @@ interface MediaItem {
   url: string;
   type: string;
   fileName: string;
+  timestamp: Date;
 }
 
 interface UpdatePostRoute {
