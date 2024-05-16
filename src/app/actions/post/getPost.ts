@@ -65,7 +65,7 @@ export const getAllPost = async (pageParam: number, pageSize = 3) => {
         const author = { ...record.author };
         const xata = { ...record.xata };
 
-        const updatedMedia = await updateSignedUrl(record.media);
+        const updatedMedia = await updateSignedUrl(record.media, record.id);
 
         return { ...record, xata, author, media: updatedMedia };
       })
@@ -99,7 +99,7 @@ export const getAllUserPost = async (
         const author = { ...record.author };
         const xata = { ...record.xata };
 
-        const updatedMedia = await updateSignedUrl(record.media);
+        const updatedMedia = await updateSignedUrl(record.media, record.id);
 
         return { ...record, xata, author, media: updatedMedia };
       })
