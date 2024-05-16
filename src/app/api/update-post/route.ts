@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
               fileName,
               type: media.mimetype,
               url: mediaUrl,
-              timestamp: new Date(),
+              timestamp: new Date().toISOString(),
             });
 
             return {
