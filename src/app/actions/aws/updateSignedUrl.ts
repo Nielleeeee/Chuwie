@@ -10,13 +10,17 @@ export const updateSignedUrl = async (
   const xataClient = getXataClient();
 
   try {
-    const sevenDaysAgo = new Date();
+    const sevenDaysAgo = new Date(); 
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    let hasChanges = false;
 
     const updatedMedia = await Promise.all(
       mediaItems.map(async (mediaItem: MediaItem) => {
         if (new Date(mediaItem.timestamp) > sevenDaysAgo) {
           const updatedUrl = await signedUrl(mediaItem.fileName);
+
+          hasChanges = true;
 
           return {
             ...mediaItem,
@@ -30,11 +34,13 @@ export const updateSignedUrl = async (
     );
 
     // Update xata database
-    const updateDb = await xataClient.db.Post.update(postID, {
-      media: JSON.stringify(updatedMedia),
-    });
+    if (hasChanges) {
+      const updateDb = await xataClient.db.Post.update(postID, {
+        media: JSON.stringify(updatedMedia),
+      });
 
-    console.log(updateDb);
+      console.log("Signed Url Database Update: ", updateDb);
+    }
 
     return updatedMedia;
   } catch (error) {
