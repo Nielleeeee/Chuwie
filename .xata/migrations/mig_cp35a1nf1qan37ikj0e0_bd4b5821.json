@@ -1,0 +1,13 @@
+{
+  "id": "mig_cp35a1nf1qan37ikj0e0",
+  "parentID": "mig_cp353pgd6bvasq6eqbg0",
+  "checksum": "1:bd4b5821ffd3c550de37126016868472e4423e82e3d54e63da58c92e8c84b481",
+  "operations": [
+    {
+      "removeColumn": {
+        "column": "media_timestamp",
+        "table": "Post"
+      }
+    }
+  ]
+}

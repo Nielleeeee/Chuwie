@@ -1,0 +1,16 @@
+{
+  "id": "mig_cp353pgd6bvasq6eqbg0",
+  "parentID": "mig_colrfpjcq0nij8lu341g",
+  "checksum": "1:f86621d364ce3e791cf290a461e9b4b751891c57e9c37f87b0f94bad65e78353",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "media_timestamp",
+          "type": "datetime"
+        },
+        "table": "Post"
+      }
+    }
+  ]
+}
