@@ -17,7 +17,7 @@ export const updateSignedUrl = async (
 
     const updatedMedia = await Promise.all(
       mediaItems.map(async (mediaItem: MediaItem) => {
-        if (new Date(mediaItem.timestamp) > sevenDaysAgo) {
+        if (new Date(mediaItem.timestamp) < sevenDaysAgo) {
           const updatedUrl = await signedUrl(mediaItem.fileName);
 
           hasChanges = true;
