@@ -7,6 +7,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import Lightbox from "yet-another-react-lightbox";
 import ReactPlayer from "react-player";
 import Video from "yet-another-react-lightbox/plugins/video";
+import Download from "yet-another-react-lightbox/plugins/download";
 
 import "yet-another-react-lightbox/styles.css";
 import "swiper/css";
@@ -95,7 +96,7 @@ export default function MediaList({ postData }: any) {
       <Lightbox
         open={isOpenImage}
         close={() => setIsOpenImage(false)}
-        plugins={[Video]}
+        plugins={[Video, Download]}
         slides={slides}
         index={activeImage}
         carousel={{
