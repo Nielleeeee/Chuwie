@@ -31,8 +31,22 @@ export default function MediaList({ postData }: any) {
     }
   };
 
-  const slides = postData.media.map((image: { url: string; type: string }) => {
-    return { src: image.url };
+  const slides = postData.media.map((media: { url: string; type: string }) => {
+    const mediaType = media.type.split("/")[0];
+
+    if (mediaType === "video") {
+      return {
+        type: mediaType,
+        sources: [
+          {
+            src: media.url,
+            type: media.type,
+          },
+        ],
+      };
+    } else {
+      return { src: media.url };
+    }
   });
 
   return (
