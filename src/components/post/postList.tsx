@@ -8,6 +8,7 @@ import KebabDropdown from "@/components/ui/dropdown/kebabDropdown";
 import MediaList from "@/components/post/mediaList";
 import Image from "next/image";
 import Link from "next/link";
+import LikePost from "./likePost";
 
 export default function PostList({ PostData }: any) {
   const { userId } = useAuth();
@@ -51,6 +52,10 @@ export default function PostList({ PostData }: any) {
               <p className="mb-4">{post.content}</p>
 
               <MediaList postData={post} />
+
+              <div className="py-4 px-2">
+                <LikePost />
+              </div>
             </div>
           </TransitionMoveUp>
         ))}
