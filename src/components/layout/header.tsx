@@ -46,13 +46,7 @@ export default function Header() {
 
         <nav className="flex w-auto">
           {/* Desktop */}
-          <ul className="flex-row gap-6 w-full items-center justify-end text-white text-lg font-medium lg:flex hidden">
-            <li>
-              <Link className="text-white transition group" href="#about">
-                <div className="w-auto h-[2px] mt-[2px] bg-white transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
-              </Link>
-            </li>
-
+          <ul className="flex-row gap-6 w-full items-center justify-end text-white text-lg font-medium flex">
             <li className="flex flex-row gap-2">
               <ClerkLoading>
                 <AvatarLoader />
