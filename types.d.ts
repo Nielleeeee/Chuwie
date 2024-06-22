@@ -82,3 +82,8 @@ interface UserInfoProps {
   profile_picture: string;
   user_id?: string;
 }
+
+interface LikePostParams {
+  user_id: string;
+  post_id: string;
+}
