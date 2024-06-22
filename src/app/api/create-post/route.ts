@@ -4,6 +4,7 @@ import { currentUser } from "@clerk/nextjs";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import crypto from "crypto";
 import { signedUrl } from "@/app/actions/aws/signedUrl";
+import pako from "pako";
 
 const bucketName = process.env.AWS_BUCKET_NAME;
 const region = process.env.AWS_REGION;
@@ -24,16 +25,21 @@ const generateFileName = (bytes = 32) =>
   crypto.randomBytes(bytes).toString("hex");
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-
-  const { content, media } = body;
-
-  const xataClient = getXataClient();
-
-  const user = await currentUser();
-  const author_id = (user?.publicMetadata.user_id as string) || "";
-
   try {
+    const arrayBuffer = await req.arrayBuffer();
+    const compressedData = new Uint8Array(arrayBuffer);
+
+    const decompressData = pako.inflate(compressedData, { to: "string" });
+
+    const body = JSON.parse(decompressData);
+
+    const { content, media } = body;
+
+    const xataClient = getXataClient();
+
+    const user = await currentUser();
+    const author_id = (user?.publicMetadata.user_id as string) || "";
+
     const mediaObject: MediaItem[] = [];
 
     const uploadMediaS3 = await Promise.all(
