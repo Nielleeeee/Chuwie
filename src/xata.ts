@@ -14,6 +14,7 @@ const tables = [
       { name: "media", type: "json" },
       { name: "author", type: "link", link: { table: "User" } },
     ],
+    revLinks: [{ column: "post_id", table: "Like" }],
   },
   {
     name: "Comment",
@@ -33,7 +34,17 @@ const tables = [
       { name: "last_name", type: "string" },
       { name: "profile_picture", type: "string" },
     ],
-    revLinks: [{ column: "author", table: "Post" }],
+    revLinks: [
+      { column: "author", table: "Post" },
+      { column: "user_id", table: "Like" },
+    ],
+  },
+  {
+    name: "Like",
+    columns: [
+      { name: "user_id", type: "link", link: { table: "User" } },
+      { name: "post_id", type: "link", link: { table: "Post" } },
+    ],
   },
 ] as const;
 
@@ -49,10 +60,14 @@ export type CommentRecord = Comment & XataRecord;
 export type User = InferredTypes["User"];
 export type UserRecord = User & XataRecord;
 
+export type Like = InferredTypes["Like"];
+export type LikeRecord = Like & XataRecord;
+
 export type DatabaseSchema = {
   Post: PostRecord;
   Comment: CommentRecord;
   User: UserRecord;
+  Like: LikeRecord;
 };
 
 const DatabaseClient = buildClient();
