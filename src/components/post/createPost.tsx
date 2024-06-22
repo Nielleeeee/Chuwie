@@ -9,6 +9,7 @@ import { useDropzone } from "react-dropzone";
 import FormModal from "@/components/modal/formModal";
 import { useQueryClient } from "@tanstack/react-query";
 import ReactPlayer from "react-player";
+import pako from "pako"
 
 export default function CreatePost() {
   const [previews, setPreviews] = useState<string[]>([]);
@@ -64,9 +65,11 @@ export default function CreatePost() {
           media: [...imageFiles, ...videoFiles],
         };
 
+        const compressedPostData = pako.deflate(JSON.stringify(postData));
+
         const createPost = fetch("/api/create-post", {
           method: "POST",
-          body: JSON.stringify(postData),
+          body: compressedPostData,
         });
 
         await toast.promise(createPost, {
