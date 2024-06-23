@@ -65,6 +65,8 @@ export const getAllPost = async (pageParam: number, pageSize = 3) => {
         const author = { ...record.author };
         const xata = { ...record.xata };
 
+        // const serializedRecord = record.toSerializable()
+
         const updatedMedia = await updateSignedUrl(record.media, record.id);
 
         return { ...record, xata, author, media: updatedMedia };
