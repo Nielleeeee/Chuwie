@@ -84,6 +84,6 @@ interface UserInfoProps {
 }
 
 interface LikePostParams {
-  user_id: string | null | undefined;
+  user_id: string;
   post_id: string;
 }
