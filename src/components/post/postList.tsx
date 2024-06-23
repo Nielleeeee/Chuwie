@@ -54,7 +54,7 @@ export default function PostList({ PostData }: any) {
               <MediaList postData={post} />
 
               <div className="py-4 px-2">
-                <LikePost />
+                <LikePost post_id={post.id} user_id={userId ?? ""} />
               </div>
             </div>
           </TransitionMoveUp>
