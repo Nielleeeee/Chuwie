@@ -1,9 +1,34 @@
-import React from "react";
+"use client";
 
-export default function LikePost() {
+import { useState } from "react";
+import { likePost } from "@/app/actions/post/likePost";
+
+export default function LikePost({ post_id, user_id }: LikePostParams) {
+  const [isLiked, setIsLiked] = useState(false);
+
+  const handleLikePost = async () => {
+    if (!user_id) {
+      console.error("User ID is required to like a post.");
+      return;
+    }
+
+    const result = await likePost({ post_id, user_id });
+
+    if (result.status) {
+      setIsLiked((prev) => !prev);
+    } else {
+      console.error(result.error);
+    }
+  };
+
   return (
     <div title="Like" className="heart-container">
-      <input id="Give-It-An-Id" className="checkbox" type="checkbox" />
+      <input
+        className="checkbox"
+        type="checkbox"
+        checked={isLiked}
+        onChange={handleLikePost}
+      />
       <div className="svg-container">
         <svg
           xmlns="http://www.w3.org/2000/svg"
