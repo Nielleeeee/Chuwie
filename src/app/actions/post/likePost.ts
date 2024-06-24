@@ -15,22 +15,13 @@ export const likePost = async ({ post_id, user_id }: LikePostParams) => {
       "user_id.id": user_id,
     }).getFirst();
 
+    let result;
+
     if (!isLiked) {
-      await xataClient.db.Like.create({ post_id, user_id });
+      result = await xataClient.db.Like.create({ post_id, user_id });
+    } else {
+      result = await xataClient.db.Like.delete(isLiked.id);
     }
-
-    return { status: true, error: null };
-  } catch (error) {
-    console.error(error);
-    return { status: null, error: error };
-  }
-};
-
-export const removelikePost = async ({ likeId }: { likeId: string }) => {
-  try {
-    const xataClient = getXataClient();
-
-    await xataClient.db.Like.delete(likeId);
 
     return { status: true, error: null };
   } catch (error) {
