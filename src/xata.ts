@@ -13,8 +13,9 @@ const tables = [
       { name: "content", type: "text" },
       { name: "media", type: "json" },
       { name: "author", type: "link", link: { table: "User" } },
+      { name: "like_count", type: "int" },
     ],
-    revLinks: [{ column: "post_id", table: "Like" }],
+    revLinks: [{ column: "post", table: "Like" }],
   },
   {
     name: "Comment",
@@ -36,14 +37,14 @@ const tables = [
     ],
     revLinks: [
       { column: "author", table: "Post" },
-      { column: "user_id", table: "Like" },
+      { column: "user", table: "Like" },
     ],
   },
   {
     name: "Like",
     columns: [
-      { name: "user_id", type: "link", link: { table: "User" } },
-      { name: "post_id", type: "link", link: { table: "Post" } },
+      { name: "user", type: "link", link: { table: "User" } },
+      { name: "post", type: "link", link: { table: "Post" } },
     ],
   },
 ] as const;
