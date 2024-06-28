@@ -62,14 +62,11 @@ export const getAllPost = async (pageParam: number, pageSize = 3) => {
     // Preprocess posts
     const processedPosts = await Promise.all(
       post.records.map(async (record) => {
-        const author = { ...record.author };
-        const xata = { ...record.xata };
-
-        // const serializedRecord = record.toSerializable()
+        const serializedRecord = record.toSerializable()
 
         const updatedMedia = await updateSignedUrl(record.media, record.id);
 
-        return { ...record, xata, author, media: updatedMedia };
+        return { ...serializedRecord, media: updatedMedia };
       })
     );
 
@@ -98,12 +95,11 @@ export const getAllUserPost = async (
     // Preprocess posts
     const processedPosts = await Promise.all(
       post.records.map(async (record) => {
-        const author = { ...record.author };
-        const xata = { ...record.xata };
+        const serializedRecord = record.toSerializable()
 
         const updatedMedia = await updateSignedUrl(record.media, record.id);
 
-        return { ...record, xata, author, media: updatedMedia };
+        return { ...serializedRecord, media: updatedMedia };
       })
     );
 
