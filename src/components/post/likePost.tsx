@@ -3,16 +3,11 @@
 import { useState } from "react";
 import { likePost } from "@/app/actions/post/likePost";
 
-export default function LikePost({ post_id, user_id }: LikePostParams) {
+export default function LikePost({ post_id }: LikePostParams) {
   const [isLiked, setIsLiked] = useState(false);
 
   const handleLikePost = async () => {
-    if (!user_id) {
-      console.error("User ID is required to like a post.");
-      return;
-    }
-
-    const result = await likePost({ post_id, user_id });
+    const result = await likePost({ post_id });
 
     if (result.status) {
       setIsLiked((prev) => !prev);
