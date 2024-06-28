@@ -1,9 +1,16 @@
 "use server";
 
 import { getXataClient } from "@/xata";
+import { currentUser } from "@clerk/nextjs/server";
 
-export const likePost = async ({ post_id, user_id }: LikePostParams) => {
+export const likePost = async ({ post_id }: LikePostParams) => {
   try {
+    const user = await currentUser();
+
+    const user_id = user?.publicMetadata.user_id as string;
+
+    console.log("User ID type: ", typeof user_id);
+
     const xataClient = getXataClient();
 
     if (!user_id) {
@@ -11,17 +18,42 @@ export const likePost = async ({ post_id, user_id }: LikePostParams) => {
     }
 
     const isLiked = await xataClient.db.Like.filter({
-      "post_id.id": post_id,
-      "user_id.id": user_id,
+      "post.id": post_id,
+      "user.id": user_id,
     }).getFirst();
 
     let result;
 
     if (!isLiked) {
-      result = await xataClient.db.Like.create({ post_id, user_id });
+      result = await xataClient.transactions.run([
+        {
+          insert: {
+            table: "Like",
+            record: { user: user_id, post: post_id },
+          },
+        },
+        {
+          update: {
+            table: "Post",
+            id: post_id,
+            fields: { like_count: { $increment: 1 } },
+          },
+        },
+      ]);
     } else {
-      result = await xataClient.db.Like.delete(isLiked.id);
+      result = await xataClient.transactions.run([
+        { delete: { table: "Like", id: isLiked.id } },
+        {
+          update: {
+            table: "Post",
+            id: post_id,
+            fields: { like_count: { $decrement: 1 } },
+          },
+        },
+      ]);
     }
+
+    console.log("Query Result: ", result);
 
     return { status: true, error: null };
   } catch (error) {
