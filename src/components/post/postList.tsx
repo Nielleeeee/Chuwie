@@ -9,6 +9,7 @@ import MediaList from "@/components/post/mediaList";
 import Image from "next/image";
 import Link from "next/link";
 import LikePost from "./likePost";
+import { currentUser } from "@clerk/nextjs/server";
 
 export default function PostList({ PostData }: any) {
   const { userId } = useAuth();
@@ -54,7 +55,7 @@ export default function PostList({ PostData }: any) {
               <MediaList postData={post} />
 
               <div className="py-4 px-2">
-                <LikePost post_id={post.id} user_id={userId ?? ""} />
+                <LikePost post_id={post.id} />
               </div>
             </div>
           </TransitionMoveUp>
