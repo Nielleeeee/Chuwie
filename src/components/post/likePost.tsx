@@ -25,14 +25,14 @@ export default function LikePost({ post_id }: LikePostParams) {
       debounceTimeout.current = null;
 
       if (newLikeState !== initialLikeState.current) {
-        // const result = await likePost({ post_id });
+        const result = await likePost({ post_id });
 
-        // if (result.status) {
-        //   setIsLiked((prev) => !prev);
-        // } else {
-        //   setIsLiked(initialLikeState.current);
-        //   console.error(result.error);
-        // }
+        if (result.status) {
+          setIsLiked((prev) => !prev);
+        } else {
+          setIsLiked(initialLikeState.current);
+          console.error(result.error);
+        }
 
         console.log("State Change");
       } else {
