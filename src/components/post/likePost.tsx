@@ -1,19 +1,44 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { likePost } from "@/app/actions/post/likePost";
 
 export default function LikePost({ post_id }: LikePostParams) {
   const [isLiked, setIsLiked] = useState(false);
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+  const initialLikeState = useRef(isLiked);
 
   const handleLikePost = async () => {
-    const result = await likePost({ post_id });
-
-    if (result.status) {
-      setIsLiked((prev) => !prev);
-    } else {
-      console.error(result.error);
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
     }
+
+    const newLikeState = !isLiked;
+
+    if (debounceTimeout.current === null) {
+      initialLikeState.current = isLiked;
+    }
+
+    setIsLiked(newLikeState);
+
+    debounceTimeout.current = setTimeout(async () => {
+      debounceTimeout.current = null;
+
+      if (newLikeState !== initialLikeState.current) {
+        // const result = await likePost({ post_id });
+
+        // if (result.status) {
+        //   setIsLiked((prev) => !prev);
+        // } else {
+        //   setIsLiked(initialLikeState.current);
+        //   console.error(result.error);
+        // }
+
+        console.log("State Change");
+      } else {
+        console.log("No state change");
+      }
+    }, 800);
   };
 
   return (
