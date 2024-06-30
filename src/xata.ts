@@ -13,7 +13,7 @@ const tables = [
       { name: "content", type: "text" },
       { name: "media", type: "json" },
       { name: "author", type: "link", link: { table: "User" } },
-      { name: "like_count", type: "int" },
+      { name: "like_count", type: "int", notNull: true, defaultValue: "0" },
     ],
     revLinks: [{ column: "post", table: "Like" }],
   },
