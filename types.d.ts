@@ -85,4 +85,6 @@ interface UserInfoProps {
 
 interface LikePostParams {
   post_id: string;
+  like_count: number;
+  isLikedPost: boolean;
 }
