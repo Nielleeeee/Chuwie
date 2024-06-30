@@ -3,13 +3,11 @@
 import { getXataClient } from "@/xata";
 import { currentUser } from "@clerk/nextjs/server";
 
-export const likePost = async ({ post_id }: LikePostParams) => {
+export const likePost = async (post_id: string) => {
   try {
     const user = await currentUser();
 
     const user_id = user?.publicMetadata.user_id as string;
-
-    console.log("User ID type: ", typeof user_id);
 
     const xataClient = getXataClient();
 
@@ -24,7 +22,7 @@ export const likePost = async ({ post_id }: LikePostParams) => {
 
     let result;
 
-    if (!isLiked) {
+    if (isLiked === null || isLiked === undefined) {
       result = await xataClient.transactions.run([
         {
           insert: {
