@@ -1,8 +1,8 @@
 "use server";
 
 import { getXataClient } from "@/xata";
-import { signedUrl } from "@/app/actions/aws/signedUrl";
 import { updateSignedUrl } from "@/app/actions/aws/updateSignedUrl";
+import { getLikeData } from "@/app/actions/post/getLikeData";
 
 const xataClient = getXataClient();
 
@@ -62,11 +62,17 @@ export const getAllPost = async (pageParam: number, pageSize = 3) => {
     // Preprocess posts
     const processedPosts = await Promise.all(
       post.records.map(async (record) => {
-        const serializedRecord = record.toSerializable()
+        const { isCurrentUserLikePost } = await getLikeData(record.id);
+
+        const serializedRecord = record.toSerializable();
 
         const updatedMedia = await updateSignedUrl(record.media, record.id);
 
-        return { ...serializedRecord, media: updatedMedia };
+        return {
+          ...serializedRecord,
+          media: updatedMedia,
+          isLiked: isCurrentUserLikePost,
+        };
       })
     );
 
@@ -95,11 +101,17 @@ export const getAllUserPost = async (
     // Preprocess posts
     const processedPosts = await Promise.all(
       post.records.map(async (record) => {
-        const serializedRecord = record.toSerializable()
+        const { isCurrentUserLikePost } = await getLikeData(record.id);
+
+        const serializedRecord = record.toSerializable();
 
         const updatedMedia = await updateSignedUrl(record.media, record.id);
 
-        return { ...serializedRecord, media: updatedMedia };
+        return {
+          ...serializedRecord,
+          media: updatedMedia,
+          isLiked: isCurrentUserLikePost,
+        };
       })
     );
 
