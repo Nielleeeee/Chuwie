@@ -15,16 +15,12 @@ export const getLikeData = async (postID: string) => {
       "user.id": dbID,
     }).getFirst();
 
-    const getLikesCount = await xataClient.db.Post.select(["like_count"])
-      .filter({ id: postID })
-      .getFirst();
-
-    const likeData = { likeCount: getLikesCount?.like_count, isCurrentUserLiked: isLiked !== null };
+    const isCurrentUserLikePost = isLiked !== null;
 
     return {
       status: true,
       error: null,
-      likeData,
+      isCurrentUserLikePost,
     };
   } catch (error) {
     console.error(error);
