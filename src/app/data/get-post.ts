@@ -21,6 +21,7 @@ export const useGetAllPost = () => {
       const hasNextPage = allPages[allPages.length - 1]?.hasNextPage;
       return hasNextPage ? allPages.length + 1 : undefined;
     },
+    refetchOnMount: "always",
   });
 };
 
@@ -34,5 +35,6 @@ export const useGetAllUserPost = (username: string) => {
       const hasNextPage = allPages[allPages.length - 1]?.hasNextPage;
       return hasNextPage ? allPages.length + 1 : undefined;
     },
+    refetchOnMount: "always",
   });
 };
