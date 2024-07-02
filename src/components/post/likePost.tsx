@@ -45,10 +45,6 @@ export default function LikePost({
           setIsLiked(initialLikeState.current);
           console.error(result.error);
         }
-
-        console.log("State Change");
-      } else {
-        console.log("No state change");
       }
     }, 800);
   };
