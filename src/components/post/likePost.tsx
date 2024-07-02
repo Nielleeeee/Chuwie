@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { likePost } from "@/app/actions/post/likePost";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function LikePost({
   post_id,
@@ -9,9 +10,9 @@ export default function LikePost({
   isLikedPost,
 }: LikePostParams) {
   const [isLiked, setIsLiked] = useState(isLikedPost);
-  const [likeCount, setLikeCount] = useState(like_count);
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
   const initialLikeState = useRef(isLiked);
+  const queryClient = useQueryClient();
 
   const handleLikePost = async () => {
     if (debounceTimeout.current) {
@@ -33,7 +34,13 @@ export default function LikePost({
         const result = await likePost(post_id);
 
         if (result.status) {
-          setIsLiked((prev) => !prev);
+          queryClient.invalidateQueries({
+            queryKey: ["allPosts"],
+          });
+      
+          queryClient.invalidateQueries({
+            queryKey: ["allUserPosts"],
+          });        
         } else {
           setIsLiked(initialLikeState.current);
           console.error(result.error);
@@ -84,7 +91,7 @@ export default function LikePost({
         </div>
       </div>
 
-      <p className="font-semibold">{likeCount}</p>
+      <p className="font-semibold">{like_count}</p>
     </div>
   );
 }
