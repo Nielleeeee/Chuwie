@@ -20,7 +20,7 @@ export default function PostList({ PostData }: any) {
           <TransitionMoveUp key={index}>
             <div className="relative rounded-md bg-white p-4 my-4 shadow-md">
               <div className="flex mb-4">
-                <Link
+                <a
                   href={`profile/${post.author.username}`}
                   className="flex flex-row items-center w-full"
                 >
@@ -38,7 +38,7 @@ export default function PostList({ PostData }: any) {
                     </h3>
                     <DateFormat date={post.xata.createdAt} />
                   </div>
-                </Link>
+                </a>
 
                 {userId == post.author.clerk_id && (
                   <KebabDropdown>
@@ -54,7 +54,7 @@ export default function PostList({ PostData }: any) {
               <MediaList postData={post} />
 
               <div className="py-4 px-2">
-                <LikePost isLikedPost={post.isLiked} like_count={post.like_count} post_id={post.id} />
+                <LikePost key={post.id} isLikedPost={post.isLiked} like_count={post.like_count} post_id={post.id} />
               </div>
             </div>
           </TransitionMoveUp>
