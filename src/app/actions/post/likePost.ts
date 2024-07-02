@@ -51,9 +51,7 @@ export const likePost = async (post_id: string) => {
       ]);
     }
 
-    console.log("Query Result: ", result);
-
-    return { status: true, error: null };
+    return { status: true, error: null, result: result };
   } catch (error) {
     console.error(error);
     return { status: null, error: error };
